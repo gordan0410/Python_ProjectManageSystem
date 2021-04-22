@@ -2,5 +2,5 @@
 .vscode
 *.pyc
 *.pyo
-media/*
+Project_Manage_System/media/*
 local_settings.py
