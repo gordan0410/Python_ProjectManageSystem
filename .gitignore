@@ -1,0 +1,6 @@
+.idea
+.vscode
+*.pyc
+*.pyo
+local_settings.py
+Project_Manage_System/media/*
