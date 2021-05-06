@@ -4,8 +4,8 @@ services:
     build: .
     environment:
       - PYTHONUNBUFFERED=1
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python Project_Manage_System/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
     ports:
-      - "10101:8000"
+      - "10200:8000"
