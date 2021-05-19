@@ -107,7 +107,7 @@
             </nav>
             <div class="dropdown-divider"></div>
             <nav class="navbar">
-                <div class="btn-group" role="group" aria-label="Basic example">
+                <div class="btn-group order-1 order-md-0" role="group" aria-label="Basic example">
                     <button type="button" class="btn btn-light text-secondary active">Your projects
                         <span class="badge badge-secondary">2</span>
                     </button>
@@ -116,13 +116,14 @@
                     </button>
                     <button type="button" class="btn btn-light text-secondary">Explore projects</button>
                 </div>
-                <form class="form-inline">
+                <form class="form-inline order-0 order-md-1">
                     <input type="text" class="form-control" placeholder="Filter by name...">
                     &emsp;
-                    <select class="form-control">
+                    <select class="custom-select">
                         <option selected>Name</option>
                         <option>...</option>
                     </select>
+                    <p class="d-md-none">&emsp;</p>
                 </form>
             </nav>
             <div class="dropdown-divider"></div>
