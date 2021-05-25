@@ -103,7 +103,37 @@
         <div class="col-md-9">
             <nav class="navbar">
                 <h3>Projects</h3>
-                <a class="btn btn-primary" href="#" role="button">新增專案</a>
+                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#NewProject">
+                    新增專案
+                </button>
+                <div class="modal fade" id="NewProject" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">新增專案</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+
+                                        {{ new_project_form }}
+
+                                    </div>
+                                    <hr>
+                                    <div class="flex justify-content-end">
+                                        <input class="btn btn-success" type="submit" value="儲存">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </nav>
             <div class="dropdown-divider"></div>
             <nav class="navbar">
@@ -133,37 +163,33 @@
                     <button type="button" class="btn btn-light text-secondary">Personal</button>
                 </div>
             </nav>
-            <div class="dropdown-divider"></div>
             <p></p>
-            <nav class="navbar">
-                <div class="navbar-brand">
-                    <img src="{% static 'images/GitLab_Logo.png' %}" height="36" width="36">
-                </div>
-                <div class="nav-item mr-auto">
-                    <a href="#" style="color: #010101">LClai/Project_Manage_System</a>
-                </div>
-                <div class="ml-auto">
-                    update 1 weeks ago
-                </div>
-            </nav>
-            <div class="dropdown-divider"></div>
-            <nav class="navbar">
-                <div class="navbar-brand">
-                    <img src="{% static 'images/GitLab_Logo.png' %}" height="36" width="36">
-                </div>
-                <div class="nav-item mr-auto">
-                    <a href="#" style="color: #010101">LClai/Ptt_stock_analysis</a>
-                </div>
-                <div class="ml-auto">
-                    update 1 weeks ago
-                </div>
-            </nav>
+            <table class="table">
+                <thead>
+                <th scope="col">名稱</th>
+                <th scope="col">截止日期</th>
+                <th class="d-flex justify-content-end" scope="col">建立日期</th>
+                </thead>
+                <tbody>
+                {% for project in all_projects %}
+                <tr>
+                    <td>
+                        <a href="#" style="font-family: 'Microsoft JhengHei UI', monospace; color: #010101">{{ project.owner }} / {{ project.name }}</a>
+                    </td>
+                    <td>
+                        {{ project.deadline|date:"Y/m/d" }}
+                    </td>
+                    <td class="d-flex justify-content-end">
+                        {{ project.created_at }}
+                    </td>
+                {% endfor %}
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-md">
         </div>
     </div>
-
-
 </div>
 </body>
 </html>
