@@ -122,11 +122,14 @@
                                     <div class="form-group">
 
                                         {{ new_project_form }}
+                                        {{ new_project_member_form }}
 
                                     </div>
+
                                     <hr>
+
                                     <div class="flex justify-content-end">
-                                        <input class="btn btn-success" type="submit" value="儲存">
+                                        <input class="btn btn-success" type="submit" name="save_next" value="儲存">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                                     </div>
                                 </form>
@@ -166,7 +169,7 @@
             <p></p>
             <table class="table">
                 <thead>
-                <th scope="col">名稱</th>
+                <th scope="col">專案名稱</th>
                 <th scope="col">截止日期</th>
                 <th class="d-flex justify-content-end" scope="col">建立日期</th>
                 </thead>
@@ -174,7 +177,7 @@
                 {% for project in all_projects %}
                 <tr>
                     <td>
-                        <a href="#" style="font-family: 'Microsoft JhengHei UI', monospace; color: #010101">{{ project.owner }} / {{ project.name }}</a>
+                        <a href="#" style="font-family: 'Microsoft JhengHei UI', monospace; color: #010101">{{ project.name }}</a>
                     </td>
                     <td>
                         {{ project.deadline|date:"Y/m/d" }}
@@ -182,7 +185,7 @@
                     <td class="d-flex justify-content-end">
                         {{ project.created_at }}
                     </td>
-                {% endfor %}
+                    {% endfor %}
                 </tr>
                 </tbody>
             </table>
