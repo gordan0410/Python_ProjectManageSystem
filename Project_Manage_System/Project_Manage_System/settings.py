@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pms_index',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
