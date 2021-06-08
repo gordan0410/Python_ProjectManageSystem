@@ -1,22 +1,23 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import ProjectForm, ProjectMembersForm
+from .forms import ProjectForm, RegisterForm, LoginForm
 from .models import Projects, ProjectMembers
 from django.contrib.auth.models import User
-from django.http import JsonResponse
-from django.db.models import Q
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 
+@login_required(login_url="Login")
 def pms_index(request):
     all_users = User.objects.exclude(username=request.user)
     all_projects = Projects.objects.all()
 
     new_project_form = ProjectForm()
-    new_project_member_form = ProjectMembersForm()
 
     if request.method == "POST":
         new_project_form = ProjectForm(request.POST)
-        current_user = User.objects.filter(username=request.user).first()
+        current_user = request.user
         data = dict(request.POST)
         select_user = list(data['select_user'])
         select_user = [int(x) for x in select_user]
@@ -40,5 +41,39 @@ def pms_index(request):
     return render(request, "index.html", locals())
 
 
-def login(request):
+def sign_in(request):
+
+    login_form = LoginForm()
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("/")
+
     return render(request, "login.html", locals())
+
+
+def log_out(request):
+
+    logout(request)
+
+    return redirect('/login')
+
+
+def register(request):
+    register_form = RegisterForm()
+    if request.method == "POST":
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            register_form.save()
+            return redirect("/login")
+        else:
+            errs = dict(register_form.errors)
+            errfields = []
+            for errfield in errs.keys():
+                errfields.append(errfield)
+
+    return render(request, "register.html", locals())
