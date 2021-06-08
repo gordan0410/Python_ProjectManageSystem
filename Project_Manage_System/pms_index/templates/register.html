@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register - Project Manage System</title>
+    {% load widget_tweaks %}
+    {% load static %}
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar justify-content-center mt-1">
+        <img src="{% static 'images/GitLab_Logo.png' %}" alt="X" height="24" width="24">
+    </nav>
+    <div class="dropdown-divider"></div>
+</div>
+<br>
+<div class="container-md">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center" style="text-decoration: underline">會員註冊</h2>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <form action="" method="POST" novalidate>
+                {% csrf_token %}
+                <div class="form-row">
+<!--                        username-->
+                    <div class="form-group col-md-12">
+                        <label {% if "username" in errfields %} class="text-danger" {% endif %} >{{register_form.username.label}}</label>
+                        {% if "username" in errfields %}
+                        {{ register_form.username|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.username }}
+                        {% endif %}
+                    </div>
+                    <div class="form-inline ml-0 text-danger invalid-feedback">
+                        {% if "username" in errfields %}
+                        <p>{{ errs.username }}</p>
+                        {% endif %}
+                    </div>
+<!--                    password1-->
+                    <div class="form-group col-md-12">
+                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger" {% endif %} >{{register_form.password1.label}}</label>
+                        {% if "password1" in errfields or "password2" in errfields %}
+                        {{ register_form.password1|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.password1 }}
+                        {% endif %}
+                    </div>
+                    <div class="form-inline ml-0 text-danger invalid-feedback">
+                        {% if "password1" in errfields or "password2" in errfields %}
+                        {% if errs.password1 == errs.password2 %}
+                        <p>{{ errs.password1 }}</p>
+                        {% else %}
+                        <p>{{ errs.password1 }}{{ errs.password2 }}</p>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+<!--                    password2-->
+                    <div class="form-group col-md-12">
+                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger" {% endif %} >{{register_form.password2.label}}</label>
+                        {% if "password1" in errfields or "password2" in errfields %}
+                        {{ register_form.password2|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.password2 }}
+                        {% endif %}
+                    </div>
+<!--                    last_name-->
+                    <div class="form-group col">
+                        <label {% if "last_name" in errfields %}} class="text-danger" {% endif %} >{{register_form.last_name.label}}</label>
+                        {% if "last_name" in errfields %}
+                        {{ register_form.last_name|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.last_name }}
+                        {% endif %}
+                    </div>
+                    <div class="form-inline ml-0 text-danger invalid-feedback">
+                        {% if "last_name" in errfields %}
+                        <p>{{ errs.last_name }}</p>
+                        {% endif %}
+                    </div>
+<!--                    first_name-->
+                    <div class="form-group col mr-0">
+                        <label {% if "first_name" in errfields %}} class="text-danger" {% endif %} >{{register_form.first_name.label}}</label>
+                        {% if "first_name" in errfields %}
+                        {{ register_form.first_name|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.first_name }}
+                        {% endif %}
+                    </div>
+                    <div class="form-inline ml-0 text-danger invalid-feedback">
+                        {% if "first_name" in errfields %}
+                        <p>{{ errs.first_name }}</p>
+                        {% endif %}
+                    </div>
+<!--                    email-->
+                    <div class="form-group col-md-12">
+                        <label {% if "email" in errfields %}} class="text-danger" {% endif %} >{{register_form.email.label}}</label>
+                        {% if "email" in errfields %}
+                        {{ register_form.email|add_class:"is-invalid" }}
+                        {% else %}
+                        {{ register_form.email }}
+                        {% endif %}
+                    </div>
+                    <div class="form-inline ml-0 text-danger invalid-feedback">
+                        {% if "email" in errfields %}
+                        <p>{{ errs.email }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <hr>
+                <div class="form-row justify-content-end">
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-success" value="確認">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Cancel">取消
+                        </button>
+                    </div>
+            </form>
+            <div class="modal fade" id="Cancel" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">確認取消?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-end">
+                            <a href="{% url 'Login' %}" class="btn btn-success">確認</a>
+                            &ensp;
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

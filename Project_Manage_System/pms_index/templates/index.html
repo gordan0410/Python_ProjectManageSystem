@@ -79,16 +79,16 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="#">
-                    Username
+                    {{ request.user }}
                     <br>
-                    @Username
+                    @{{ request.user }}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Set status</a>
                 <a class="dropdown-item" href="#">Edit profile</a>
                 <a class="dropdown-item" href="#">Preferences</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Sign out</a>
+                <a class="dropdown-item" href="{% url 'Logout' %}">Sign out</a>
             </div>
         </div>
     </nav>
