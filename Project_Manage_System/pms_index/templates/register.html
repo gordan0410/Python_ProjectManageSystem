@@ -32,9 +32,10 @@
             <form action="" method="POST" novalidate>
                 {% csrf_token %}
                 <div class="form-row">
-<!--                        username-->
+                    <!--                        username-->
                     <div class="form-group col-md-12">
-                        <label {% if "username" in errfields %} class="text-danger" {% endif %} >{{register_form.username.label}}</label>
+                        <label {% if "username" in errfields %} class="text-danger" {% endif %}
+                        >{{register_form.username.label}}</label>
                         {% if "username" in errfields %}
                         {{ register_form.username|add_class:"is-invalid" }}
                         {% else %}
@@ -46,9 +47,10 @@
                         <p>{{ errs.username }}</p>
                         {% endif %}
                     </div>
-<!--                    password1-->
+                    <!--                    password1-->
                     <div class="form-group col-md-12">
-                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger" {% endif %} >{{register_form.password1.label}}</label>
+                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger"
+                        {% endif %} >{{register_form.password1.label}}</label>
                         {% if "password1" in errfields or "password2" in errfields %}
                         {{ register_form.password1|add_class:"is-invalid" }}
                         {% else %}
@@ -64,18 +66,20 @@
                         {% endif %}
                         {% endif %}
                     </div>
-<!--                    password2-->
+                    <!--                    password2-->
                     <div class="form-group col-md-12">
-                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger" {% endif %} >{{register_form.password2.label}}</label>
+                        <label {% if "password1" in errfields or "password2" in errfields %} class="text-danger"
+                        {% endif %} >{{register_form.password2.label}}</label>
                         {% if "password1" in errfields or "password2" in errfields %}
                         {{ register_form.password2|add_class:"is-invalid" }}
                         {% else %}
                         {{ register_form.password2 }}
                         {% endif %}
                     </div>
-<!--                    last_name-->
+                    <!--                    last_name-->
                     <div class="form-group col">
-                        <label {% if "last_name" in errfields %}} class="text-danger" {% endif %} >{{register_form.last_name.label}}</label>
+                        <label {% if "last_name" in errfields %}} class="text-danger" {% endif %}
+                        >{{register_form.last_name.label}}</label>
                         {% if "last_name" in errfields %}
                         {{ register_form.last_name|add_class:"is-invalid" }}
                         {% else %}
@@ -87,9 +91,10 @@
                         <p>{{ errs.last_name }}</p>
                         {% endif %}
                     </div>
-<!--                    first_name-->
+                    <!--                    first_name-->
                     <div class="form-group col mr-0">
-                        <label {% if "first_name" in errfields %}} class="text-danger" {% endif %} >{{register_form.first_name.label}}</label>
+                        <label {% if "first_name" in errfields %}} class="text-danger" {% endif %}
+                        >{{register_form.first_name.label}}</label>
                         {% if "first_name" in errfields %}
                         {{ register_form.first_name|add_class:"is-invalid" }}
                         {% else %}
@@ -101,9 +106,10 @@
                         <p>{{ errs.first_name }}</p>
                         {% endif %}
                     </div>
-<!--                    email-->
+                    <!--                    email-->
                     <div class="form-group col-md-12">
-                        <label {% if "email" in errfields %}} class="text-danger" {% endif %} >{{register_form.email.label}}</label>
+                        <label {% if "email" in errfields %}} class="text-danger" {% endif %}
+                        >{{register_form.email.label}}</label>
                         {% if "email" in errfields %}
                         {{ register_form.email|add_class:"is-invalid" }}
                         {% else %}
@@ -124,6 +130,7 @@
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#Cancel">取消
                         </button>
                     </div>
+                </div>
             </form>
             <div class="modal fade" id="Cancel" tabindex="-1" aria-labelledby="exampleModalLabel"
                  aria-hidden="true">
@@ -145,7 +152,6 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 </body>
 </html>
