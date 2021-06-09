@@ -104,7 +104,7 @@
         </div>
         <div class="col-md-9">
             <nav class="navbar">
-                <h3>Projects</h3>
+                <h2>專案列表</h2>
                 <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#NewProject">
                     新增專案
                 </button>
@@ -129,7 +129,7 @@
 
                                         <select name="select_user" id="select_user" multiple>
                                             {% for user in all_users %}
-                                                <option value="{{ user.id }}">{{ user.username }}</option>
+                                            <option value="{{ user.id }}">{{ user.username }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -146,6 +146,7 @@
                     </div>
                 </div>
             </nav>
+            <br>
             <!--            <div class="dropdown-divider"></div>-->
             <!--            <nav class="navbar">-->
             <!--                <div class="btn-group order-1 order-md-0" role="group" aria-label="Basic example">-->
@@ -175,29 +176,22 @@
             <!--                </div>-->
             <!--            </nav>-->
             <!--            <p></p>-->
-            <table class="table">
-                <thead>
-                <th scope="col">專案名稱</th>
-                <th scope="col">截止日期</th>
-                <th class="d-flex justify-content-end" scope="col">建立日期</th>
-                </thead>
-                <tbody>
+            <div class="row">
                 {% for project in all_projects %}
-                <tr>
-                    <td>
-                        <a href="#" style="font-family: 'Microsoft JhengHei UI', monospace; color: #010101">
-                            {{ project.name }}</a>
-                    </td>
-                    <td>
-                        {{ project.deadline|date:"Y/m/d" }}
-                    </td>
-                    <td class="d-flex justify-content-end">
-                        {{ project.created_at }}
-                    </td>
-                    {% endfor %}
-                </tr>
-                </tbody>
-            </table>
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>{{ project.name }}</h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
         </div>
         <div class="col-md">
         </div>
@@ -205,15 +199,15 @@
 </div>
 </body>
 <script>
-$(function(){
-  //$('#members_id').multiselect();
-  $("option").each(function(){
-      if($(this).val()== ""){
-        $(this).remove();
-      }
-  })
-  $('select').multiselect();
-});
+    $(function () {
+        //$('#members_id').multiselect();
+        $("option").each(function () {
+            if ($(this).val() == "") {
+                $(this).remove();
+            }
+        })
+        $('select').multiselect();
+    });
 
 </script>
 </html>
