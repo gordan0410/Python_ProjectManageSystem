@@ -5,7 +5,7 @@ from .models import Projects, ProjectMembers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 
 @login_required(login_url="Login")
@@ -69,11 +69,13 @@ def register(request):
         register_form = RegisterForm(request.POST)
         if register_form.is_valid():
             register_form.save()
+            messages.success(request, "註冊成功，請重新登入")
             return redirect("/login")
         else:
             errs = dict(register_form.errors)
             errfields = []
             for errfield in errs.keys():
                 errfields.append(errfield)
+            messages.error(request, "註冊失敗，請重新輸入")
 
     return render(request, "register.html", locals())
