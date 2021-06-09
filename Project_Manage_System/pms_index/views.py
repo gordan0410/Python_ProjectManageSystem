@@ -79,3 +79,8 @@ def register(request):
             messages.error(request, "註冊失敗，請重新輸入")
 
     return render(request, "register.html", locals())
+
+
+def workspace(request, pk):
+
+    return render(request, "workspace.html", locals())
