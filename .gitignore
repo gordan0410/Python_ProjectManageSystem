@@ -3,4 +3,4 @@
 *.pyc
 *.pyo
 local_settings.py
-Project_Manage_System/media/*
+Project_Manage_System/pms_index/media/*
