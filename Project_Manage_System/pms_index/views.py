@@ -11,7 +11,9 @@ from django.contrib import messages
 @login_required(login_url="Login")
 def pms_index(request):
     all_users = User.objects.exclude(username=request.user)
-    all_projects = Projects.objects.all()
+    my_projects = Projects.objects.filter(visibility_id=1)
+    public_projects = Projects.objects.filter(visibility_id=2)
+    group_projects = Projects.objects.filter(visibility_id=3)
 
     new_project_form = ProjectForm()
 

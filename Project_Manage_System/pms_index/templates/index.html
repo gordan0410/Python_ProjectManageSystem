@@ -147,6 +147,73 @@
                 </div>
             </nav>
             <br>
+            <nav class="navbar">
+                <h4>我的工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="row">
+                {% for project in my_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>公共工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="row">
+                {% for project in public_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>群組工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="dropdown-divider"></div>
+            <div class="row">
+                {% for project in group_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
             <!--            <div class="dropdown-divider"></div>-->
             <!--            <nav class="navbar">-->
             <!--                <div class="btn-group order-1 order-md-0" role="group" aria-label="Basic example">-->
@@ -176,24 +243,6 @@
             <!--                </div>-->
             <!--            </nav>-->
             <!--            <p></p>-->
-            <div class="row">
-                {% for project in all_projects %}
-                <div class="col-md-4">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <h4>
-                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
-                            </h4>
-                            <br>
-                            <br>
-                            <br>
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                </div>
-                {% endfor %}
-            </div>
         </div>
         <div class="col-md">
         </div>
