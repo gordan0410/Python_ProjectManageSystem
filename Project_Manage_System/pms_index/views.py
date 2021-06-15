@@ -10,13 +10,17 @@ from django.contrib import messages
 
 @login_required(login_url="Login")
 def pms_index(request):
-    all_users = User.objects.exclude(username=request.user)
     my_projects = Projects.objects.filter(visibility_id=1)
     public_projects = Projects.objects.filter(visibility_id=2)
     group_projects = Projects.objects.filter(visibility_id=3)
-
+    all_users = User.objects.exclude(username=request.user)
     new_project_form = ProjectForm()
 
+    return render(request, "index.html", locals())
+
+
+@login_required(login_url="Login")
+def create_workspace(request):
     if request.method == "POST":
         new_project_form = ProjectForm(request.POST)
         current_user = request.user
@@ -39,8 +43,6 @@ def pms_index(request):
                 member_model.member_id = member
                 member_model.save()
             return redirect("/")
-
-    return render(request, "index.html", locals())
 
 
 def sign_in(request):
