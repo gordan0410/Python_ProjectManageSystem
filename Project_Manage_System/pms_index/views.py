@@ -42,6 +42,10 @@ def create_workspace(request):
                 member = User.objects.filter(id=member_id).first()
                 member_model.member_id = member
                 member_model.save()
+            messages.success(request, "成功新增工作區", extra_tags="Workspace")
+            return redirect("/")
+        else:
+            messages.error(request, "新增工作區失敗", extra_tags="Workspace")
             return redirect("/")
 
 
@@ -73,14 +77,14 @@ def register(request):
         register_form = RegisterForm(request.POST)
         if register_form.is_valid():
             register_form.save()
-            messages.success(request, "註冊成功，請重新登入")
+            messages.success(request, "註冊成功，請重新登入", extra_tags="Login")
             return redirect("/login")
         else:
             errs = dict(register_form.errors)
             errfields = []
             for errfield in errs.keys():
                 errfields.append(errfield)
-            messages.error(request, "註冊失敗，請重新輸入")
+            messages.error(request, "註冊失敗，請重新輸入", extra_tags="Login")
 
     return render(request, "register.html", locals())
 

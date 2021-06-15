@@ -12,10 +12,12 @@
 </head>
 <body>
 <div class="container-fluid">
-    {% if messages %}
     {% for message in messages %}
+    {% if "Login" in message.tags %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
+    {% endif %}
     {% endfor %}
+    {% if messages%}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>
     </button>

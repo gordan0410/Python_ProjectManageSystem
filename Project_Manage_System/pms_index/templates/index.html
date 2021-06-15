@@ -13,7 +13,7 @@
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <nav class="navbar fixed-top navbar-expand-sm navbar-dark" style="background-color: #292961">
         <a class="navbar-brand" href="#">
             <img src="{% static 'images/GitLab_Logo.png' %}" height="24" width="24">
@@ -95,7 +95,19 @@
 </div>
 <br>
 <br>
-<br>
+<div class="container-fluid">
+    {% for message in messages %}
+    {% if "Workspace" in message.tags %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
+    {% endif %}
+    {% endfor %}
+    {% if messages%}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endif %}
+</div>
 <br>
 <br>
 <div class="container-fluid">
