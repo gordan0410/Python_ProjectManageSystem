@@ -10,11 +10,17 @@ from django.contrib import messages
 
 @login_required(login_url="Login")
 def pms_index(request):
+    my_projects = Projects.objects.filter(visibility_id=1)
+    public_projects = Projects.objects.filter(visibility_id=2)
+    group_projects = Projects.objects.filter(visibility_id=3)
     all_users = User.objects.exclude(username=request.user)
-    all_projects = Projects.objects.all()
-
     new_project_form = ProjectForm()
 
+    return render(request, "index.html", locals())
+
+
+@login_required(login_url="Login")
+def create_workspace(request):
     if request.method == "POST":
         new_project_form = ProjectForm(request.POST)
         current_user = request.user
@@ -36,9 +42,11 @@ def pms_index(request):
                 member = User.objects.filter(id=member_id).first()
                 member_model.member_id = member
                 member_model.save()
+            messages.success(request, "成功新增工作區", extra_tags="Workspace")
             return redirect("/")
-
-    return render(request, "index.html", locals())
+        else:
+            messages.error(request, "新增工作區失敗", extra_tags="Workspace")
+            return redirect("/")
 
 
 def sign_in(request):
@@ -69,14 +77,14 @@ def register(request):
         register_form = RegisterForm(request.POST)
         if register_form.is_valid():
             register_form.save()
-            messages.success(request, "註冊成功，請重新登入")
+            messages.success(request, "註冊成功，請重新登入", extra_tags="Login")
             return redirect("/login")
         else:
             errs = dict(register_form.errors)
             errfields = []
             for errfield in errs.keys():
                 errfields.append(errfield)
-            messages.error(request, "註冊失敗，請重新輸入")
+            messages.error(request, "註冊失敗，請重新輸入", extra_tags="Login")
 
     return render(request, "register.html", locals())
 

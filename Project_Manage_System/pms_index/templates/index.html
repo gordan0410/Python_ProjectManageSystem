@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Project Manage System</title>
+    <title>Create New Workspace</title>
     {% load static %}
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
@@ -13,7 +13,7 @@
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     <nav class="navbar fixed-top navbar-expand-sm navbar-dark" style="background-color: #292961">
         <a class="navbar-brand" href="#">
             <img src="{% static 'images/GitLab_Logo.png' %}" height="24" width="24">
@@ -95,7 +95,19 @@
 </div>
 <br>
 <br>
-<br>
+<div class="container-fluid">
+    {% for message in messages %}
+    {% if "Workspace" in message.tags %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
+    {% endif %}
+    {% endfor %}
+    {% if messages%}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endif %}
+</div>
 <br>
 <br>
 <div class="container-fluid">
@@ -105,11 +117,10 @@
         <div class="col-md-9">
             <nav class="navbar">
                 <h2>工作區列表</h2>
-                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#NewProject">
+                <a class="btn btn-primary the-modal" data-toggle="modal" data-target="#NewWorkspace">
                     新增工作區
-                </button>
-                <div class="modal fade" id="NewProject" tabindex="-1" aria-labelledby="exampleModalLabel"
-                     aria-hidden="true">
+                </a>
+                <div class="modal fade" id="NewWorkspace">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -119,23 +130,19 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="" method="POST">
+                                <form action="{% url 'CreateNewWorkspace' %}" method="POST">
                                     {% csrf_token %}
                                     <div class="form-group">
-
                                         {{ new_project_form }}
                                     </div>
                                     <div class="form-group">
-
                                         <select name="select_user" id="select_user" multiple>
                                             {% for user in all_users %}
                                             <option value="{{ user.id }}">{{ user.username }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
-
                                     <hr>
-
                                     <div class="flex justify-content-end">
                                         <input class="btn btn-success" type="submit" name="save_next" value="儲存">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -147,6 +154,73 @@
                 </div>
             </nav>
             <br>
+            <nav class="navbar">
+                <h4>我的工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="row">
+                {% for project in my_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>公共工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="row">
+                {% for project in public_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>群組工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="dropdown-divider"></div>
+            <div class="row">
+                {% for project in group_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
             <!--            <div class="dropdown-divider"></div>-->
             <!--            <nav class="navbar">-->
             <!--                <div class="btn-group order-1 order-md-0" role="group" aria-label="Basic example">-->
@@ -176,24 +250,6 @@
             <!--                </div>-->
             <!--            </nav>-->
             <!--            <p></p>-->
-            <div class="row">
-                {% for project in all_projects %}
-                <div class="col-md-4">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <h4>
-                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
-                            </h4>
-                            <br>
-                            <br>
-                            <br>
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                </div>
-                {% endfor %}
-            </div>
         </div>
         <div class="col-md">
         </div>
@@ -208,8 +264,7 @@
                 $(this).remove();
             }
         })
-        $('select').multiselect();
+        $('#select_user').multiselect();
     });
-
 </script>
 </html>
