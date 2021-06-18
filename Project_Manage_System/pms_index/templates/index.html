@@ -8,8 +8,6 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-    <link href="{% static 'css/bootstrap-multiselect.min.css' %}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{% static 'js/bootstrap-multiselect.min.js' %}"></script>
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -99,12 +97,12 @@
     {% for message in messages %}
     {% if "Workspace" in message.tags %}
     <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
-    {% endif %}
-    {% endfor %}
-    {% if messages%}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
+        {% endif %}
+        {% endfor %}
+        {% if messages%}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
     {% endif %}
 </div>
@@ -133,15 +131,27 @@
                                 <form action="{% url 'CreateNewWorkspace' %}" method="POST">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        {{ new_project_form }}
+                                        <label>{{ new_project_form.name.label }}</label>
+                                        {{ new_project_form.name }}
                                     </div>
                                     <div class="form-group">
-                                        <select name="select_user" id="select_user" multiple>
-                                            {% for user in all_users %}
-                                            <option value="{{ user.id }}">{{ user.username }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <label>{{ new_project_form.descriptions.label }}</label>
+                                        {{ new_project_form.descriptions }}
                                     </div>
+                                    {% for visibility in new_project_form.visibility %}
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        {{ visibility.tag }}
+                                        <label class="custom-control-label" for="{{visibility.id_for_label}}">
+                                        {% if forloop.counter0 == 0 %}
+                                        {{ visibility_label.0 }}
+                                        {% elif forloop.counter0 == 1 %}
+                                        {{ visibility_label.1 }}
+                                        {% elif forloop.counter0 == 2 %}
+                                        {{ visibility_label.2 }}
+                                        {% endif %}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
                                     <hr>
                                     <div class="flex justify-content-end">
                                         <input class="btn btn-success" type="submit" name="save_next" value="儲存">
@@ -257,14 +267,5 @@
 </div>
 </body>
 <script>
-    $(function () {
-        //$('#members_id').multiselect();
-        $("option").each(function () {
-            if ($(this).val() == "") {
-                $(this).remove();
-            }
-        })
-        $('#select_user').multiselect();
-    });
 </script>
 </html>
