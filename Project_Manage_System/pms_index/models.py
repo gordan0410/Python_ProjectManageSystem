@@ -13,7 +13,7 @@ class Projects(models.Model):
     descriptions = models.TextField(max_length=1000)
     visibility = models.ForeignKey(VisibilityAttribute, on_delete=models.PROTECT, default="1")
     status = models.CharField(max_length=10)
-    deadline = models.DateField(max_length=10)
+    deadline = models.DateField(max_length=10, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
