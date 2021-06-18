@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import ProjectForm, RegisterForm, LoginForm
-from .models import Projects, ProjectMembers
+from .models import Projects, ProjectMembers, VisibilityAttribute
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -15,7 +15,7 @@ def pms_index(request):
     group_projects = Projects.objects.filter(visibility_id=3)
     all_users = User.objects.exclude(username=request.user)
     new_project_form = ProjectForm()
-
+    visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)
     return render(request, "index.html", locals())
 
 
@@ -24,24 +24,16 @@ def create_workspace(request):
     if request.method == "POST":
         new_project_form = ProjectForm(request.POST)
         current_user = request.user
-        data = dict(request.POST)
-        select_user = list(data['select_user'])
-        select_user = [int(x) for x in select_user]
-        select_user.append(current_user.id)
         if new_project_form.is_valid():
             npfform = new_project_form.save(commit=False)
             npfform.status = "active"
             npfform.save()
-            for member_id in select_user:
-                member_model = ProjectMembers()
-                member_model.project_id = npfform
-                if member_id == current_user.id:
-                    member_model.member_status = "Owner"
-                else:
-                    member_model.member_status = "Developer"
-                member = User.objects.filter(id=member_id).first()
-                member_model.member_id = member
-                member_model.save()
+            member_model = ProjectMembers()
+            member_model.project_id = npfform
+            member_model.member_status = "Owner"
+            member = User.objects.filter(id=current_user.id).first()
+            member_model.member_id = member
+            member_model.save()
             messages.success(request, "成功新增工作區", extra_tags="Workspace")
             return redirect("/")
         else:
