@@ -1,101 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Project Manage System</title>
-    {% load static %}
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
-    <link href="{% static 'css/bootstrap-multiselect.min.css' %}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{% static 'js/bootstrap-multiselect.min.js' %}"></script>
-    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
-</head>
-<body>
-<div class="container">
-    <nav class="navbar fixed-top navbar-expand-sm navbar-dark" style="background-color: #292961">
-        <a class="navbar-brand" href="#">
-            <img src="{% static 'images/GitLab_Logo.png' %}" height="24" width="24">
-            GitLab
-        </a>
-        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarScroll"
-                aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+{% extends "base.html" %}
+
+
+{% block title %}
+<title>PMSystem</title>
+{% endblock %}
+
+
+{% load static %}
+
+
+{% block content %}
+<br>
+<br>
+<div class="container-fluid">
+    {% for message in messages %}
+    {% if "Workspace" in message.tags %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
+        {% endif %}
+        {% endfor %}
+        {% if messages%}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarScroll">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Workspace
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <div class="dropdown-content">
-                            <a class="dropdown-item" href="#">Your projects</a>
-                            <a class="dropdown-item" href="#">Starred projects</a>
-                            <a class="dropdown-item" href="#">Explore projects</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Create blank project</a>
-                            <a class="dropdown-item" href="#">import project</a>
-                            <a class="dropdown-item" href="#">Create from template</a>
-                        </div>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Groups
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Your groups</a>
-                        <a class="dropdown-item" href="#">Explore groups</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Create group</a>
-                        <a class="dropdown-item" href="#">Import group</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        More
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Activity</a>
-                        <a class="dropdown-item" href="#">Milestones</a>
-                        <a class="dropdown-item" href="#">Snippets</a>
-                    </div>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-        <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{% static 'images/GitLab_Logo.png' %}" height="24" width="24">
-            </button>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#">
-                    {{ request.user }}
-                    <br>
-                    @{{ request.user }}
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Set status</a>
-                <a class="dropdown-item" href="#">Edit profile</a>
-                <a class="dropdown-item" href="#">Preferences</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'Logout' %}">Sign out</a>
-            </div>
-        </div>
-    </nav>
+    </div>
+    {% endif %}
 </div>
-<br>
-<br>
-<br>
 <br>
 <br>
 <div class="container-fluid">
@@ -105,37 +34,44 @@
         <div class="col-md-9">
             <nav class="navbar">
                 <h2>工作區列表</h2>
-                <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#NewProject">
+                <a class="btn btn-primary the-modal" data-toggle="modal" data-target="#NewWorkspace">
                     新增工作區
-                </button>
-                <div class="modal fade" id="NewProject" tabindex="-1" aria-labelledby="exampleModalLabel"
-                     aria-hidden="true">
+                </a>
+                <div class="modal fade" id="NewWorkspace">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">新增專案</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">新增工作區</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="" method="POST">
+                                <form action="{% url 'CreateNewWorkspace' %}" method="POST">
                                     {% csrf_token %}
                                     <div class="form-group">
-
-                                        {{ new_project_form }}
+                                        <label>{{ new_project_form.name.label }}</label>
+                                        {{ new_project_form.name }}
                                     </div>
                                     <div class="form-group">
-
-                                        <select name="select_user" id="select_user" multiple>
-                                            {% for user in all_users %}
-                                            <option value="{{ user.id }}">{{ user.username }}</option>
-                                            {% endfor %}
-                                        </select>
+                                        <label>{{ new_project_form.descriptions.label }}</label>
+                                        {{ new_project_form.descriptions }}
                                     </div>
-
+                                    {% for visibility in new_project_form.visibility %}
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        {{ visibility.tag }}
+                                        <label class="custom-control-label" for="{{visibility.id_for_label}}">
+                                        {% if forloop.counter0 == 0 %}
+                                        {{ visibility_label.0 }}
+                                        {% elif forloop.counter0 == 1 %}
+                                        {{ visibility_label.1 }}
+                                        {% elif forloop.counter0 == 2 %}
+                                        {{ visibility_label.2 }}
+                                        {% endif %}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
                                     <hr>
-
                                     <div class="flex justify-content-end">
                                         <input class="btn btn-success" type="submit" name="save_next" value="儲存">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
@@ -147,37 +83,57 @@
                 </div>
             </nav>
             <br>
-            <!--            <div class="dropdown-divider"></div>-->
-            <!--            <nav class="navbar">-->
-            <!--                <div class="btn-group order-1 order-md-0" role="group" aria-label="Basic example">-->
-            <!--                    <button type="button" class="btn btn-light text-secondary active">Your projects-->
-            <!--                        <span class="badge badge-secondary">2</span>-->
-            <!--                    </button>-->
-            <!--                    <button type="button" class="btn btn-light text-secondary">Starred projects-->
-            <!--                        <span class="badge badge-secondary">0</span>-->
-            <!--                    </button>-->
-            <!--                    <button type="button" class="btn btn-light text-secondary">Explore projects</button>-->
-            <!--                </div>-->
-            <!--                <form class="form-inline order-0 order-md-1">-->
-            <!--                    <input type="text" class="form-control" placeholder="Filter by name...">-->
-            <!--                    &emsp;-->
-            <!--                    <select class="custom-select">-->
-            <!--                        <option selected>Name</option>-->
-            <!--                        <option>...</option>-->
-            <!--                    </select>-->
-            <!--                    <p class="d-md-none">&emsp;</p>-->
-            <!--                </form>-->
-            <!--            </nav>-->
-            <!--            <div class="dropdown-divider"></div>-->
-            <!--            <nav class="navbar">-->
-            <!--                <div class="btn-group" role="group" aria-label="Basic example">-->
-            <!--                    <button type="button" class="btn btn-light text-secondary active">All</button>-->
-            <!--                    <button type="button" class="btn btn-light text-secondary">Personal</button>-->
-            <!--                </div>-->
-            <!--            </nav>-->
-            <!--            <p></p>-->
+            <nav class="navbar">
+                <h4>我的工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
             <div class="row">
-                {% for project in all_projects %}
+                {% for project in my_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>公共工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="row">
+                {% for project in public_projects %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm rounded">
+                        <div class="card-body">
+                            <h4>
+                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
+                            </h4>
+                            <br>
+                            <br>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+            </div>
+            <nav class="navbar">
+                <h4>群組工作區</h4>
+            </nav>
+            <hr class="solid mt-0">
+            <div class="dropdown-divider"></div>
+            <div class="row">
+                {% for project in group_projects %}
                 <div class="col-md-4">
                     <div class="card shadow-sm rounded">
                         <div class="card-body">
@@ -199,17 +155,4 @@
         </div>
     </div>
 </div>
-</body>
-<script>
-    $(function () {
-        //$('#members_id').multiselect();
-        $("option").each(function () {
-            if ($(this).val() == "") {
-                $(this).remove();
-            }
-        })
-        $('select').multiselect();
-    });
-
-</script>
-</html>
+{% endblock %}

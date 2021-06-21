@@ -8,18 +8,18 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Projects
-        fields = ('name', 'deadline', 'descriptions')
+        fields = ('name', 'descriptions', 'visibility',)
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'deadline': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'descriptions': forms.Textarea(attrs={'class': 'form-control'}),
+            'visibility': forms.RadioSelect(attrs={'class': 'custom-control-input'}),
         }
         labels = {
-            'name': '專案名稱',
-            'deadline': '專案截止日',
-            'descriptions': '專案內容',
+            'name': '工作區名稱',
+            'descriptions': '工作區簡介',
+            'visibility': '類別',
         }
-
 
 # class ProjectMembersForm(forms.ModelForm):
 #
