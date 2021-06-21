@@ -1,15 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% extends "base.html" %}
-    <meta charset="UTF-8">
-    {% block title %}
-    <title>register - PMSystem</title>
-    {% endblock %}
-    {% load widget_tweaks %}
-    {% load static %}
-</head>
-<body>
+{% extends "base.html" %}
+
+
+{% block title %}
+<title>register - PMSystem</title>
+{% endblock %}
+
+
+{% load widget_tweaks %}
+{% load static %}
+
+
 {% block messages %}
 <div class="container-fluid">
     {% for message in messages %}
@@ -25,6 +25,8 @@
     {% endif %}
 </div>
 {% endblock %}
+
+
 {% block navbar %}
 <div class="container-fluid">
     <nav class="navbar justify-content-center mt-1">
@@ -35,6 +37,8 @@
     <div class="dropdown-divider"></div>
 </div>
 {% endblock %}
+
+
 {% block content %}
 <br>
 <div class="container-md">
@@ -172,5 +176,3 @@
     </div>
 </div>
 {% endblock %}
-</body>
-</html>
