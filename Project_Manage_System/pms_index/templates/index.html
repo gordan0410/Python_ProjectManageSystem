@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create New Workspace</title>
+    <title>PMSystem</title>
     {% load static %}
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <script type="text/javascript" src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
@@ -15,7 +15,7 @@
     <nav class="navbar fixed-top navbar-expand-sm navbar-dark" style="background-color: #292961">
         <a class="navbar-brand" href="#">
             <img src="{% static 'images/GitLab_Logo.png' %}" height="24" width="24">
-            GitLab
+            PMSystem
         </a>
         <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarScroll"
                 aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,38 +30,10 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <div class="dropdown-content">
-                            <a class="dropdown-item" href="#">Your projects</a>
-                            <a class="dropdown-item" href="#">Starred projects</a>
-                            <a class="dropdown-item" href="#">Explore projects</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Create blank project</a>
-                            <a class="dropdown-item" href="#">import project</a>
-                            <a class="dropdown-item" href="#">Create from template</a>
+                            <a class="dropdown-item" href="#">My workspaces</a>
+                            <a class="dropdown-item" href="#">Public workspaces</a>
+                            <a class="dropdown-item" href="#">Group workspaces</a>
                         </div>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Groups
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Your groups</a>
-                        <a class="dropdown-item" href="#">Explore groups</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Create group</a>
-                        <a class="dropdown-item" href="#">Import group</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        More
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Activity</a>
-                        <a class="dropdown-item" href="#">Milestones</a>
-                        <a class="dropdown-item" href="#">Snippets</a>
                     </div>
                 </li>
             </ul>
@@ -122,7 +94,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">新增專案</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">新增工作區</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
