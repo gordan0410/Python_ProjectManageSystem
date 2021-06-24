@@ -82,5 +82,12 @@ def register(request):
 
 
 def workspace(request, pk):
+    workspace_title = Projects.objects.get(id=pk)
+    project_titles = []
+    project_descript = "我是body"
+
+    n = 30
+    for i in range(n):
+        project_titles.append(i)
 
     return render(request, "workspace.html", locals())
