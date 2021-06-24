@@ -8,10 +8,8 @@
 
 {% load static %}
 
-
-{% block content %}
-<br>
-<br>
+{% block messages %}
+{% if messages %}
 <div class="container-fluid">
     {% for message in messages %}
     {% if "Workspace" in message.tags %}
@@ -25,8 +23,10 @@
     </div>
     {% endif %}
 </div>
-<br>
-<br>
+{% endif %}
+{% endblock %}
+
+{% block content %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-md">
@@ -61,13 +61,13 @@
                                     <div class="custom-control custom-radio custom-control-inline">
                                         {{ visibility.tag }}
                                         <label class="custom-control-label" for="{{visibility.id_for_label}}">
-                                        {% if forloop.counter0 == 0 %}
-                                        {{ visibility_label.0 }}
-                                        {% elif forloop.counter0 == 1 %}
-                                        {{ visibility_label.1 }}
-                                        {% elif forloop.counter0 == 2 %}
-                                        {{ visibility_label.2 }}
-                                        {% endif %}
+                                            {% if forloop.counter0 == 0 %}
+                                            {{ visibility_label.0 }}
+                                            {% elif forloop.counter0 == 1 %}
+                                            {{ visibility_label.1 }}
+                                            {% elif forloop.counter0 == 2 %}
+                                            {{ visibility_label.2 }}
+                                            {% endif %}
                                         </label>
                                     </div>
                                     {% endfor %}
@@ -90,16 +90,16 @@
             <div class="row">
                 {% for project in my_projects %}
                 <div class="col-md-4">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <h4>
-                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
-                            </h4>
-                            <br>
-                            <br>
-                            <br>
+                    <a href="{% url 'Workspace' project.id %}">
+                        <div class="card shadow-sm rounded">
+                            <div class="card-body">
+                                <h4>{{ project.name }}</h4>
+                                <br>
+                                <br>
+                                <br>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     <br>
                     <br>
                 </div>
@@ -112,16 +112,16 @@
             <div class="row">
                 {% for project in public_projects %}
                 <div class="col-md-4">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <h4>
-                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
-                            </h4>
-                            <br>
-                            <br>
-                            <br>
+                    <a href="{% url 'Workspace' project.id %}">
+                        <div class="card shadow-sm rounded">
+                            <div class="card-body">
+                                <h4>{{ project.name }}</h4>
+                                <br>
+                                <br>
+                                <br>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     <br>
                     <br>
                 </div>
@@ -135,16 +135,16 @@
             <div class="row">
                 {% for project in group_projects %}
                 <div class="col-md-4">
-                    <div class="card shadow-sm rounded">
-                        <div class="card-body">
-                            <h4>
-                                <a href="{% url 'Workspace' project.id %}">{{ project.name }}</a>
-                            </h4>
-                            <br>
-                            <br>
-                            <br>
+                    <a href="{% url 'Workspace' project.id %}">
+                        <div class="card shadow-sm rounded">
+                            <div class="card-body">
+                                <h4>{{ project.name }}</h4>
+                                <br>
+                                <br>
+                                <br>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                     <br>
                     <br>
                 </div>
