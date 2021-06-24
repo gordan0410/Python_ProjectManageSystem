@@ -24,3 +24,15 @@ class ProjectMembers(models.Model):
     member_status = models.CharField(max_length=50)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class WorkspaceList(models.Model):
+    workspace_id = models.ForeignKey(Projects, on_delete=models.PROTECT)
+    list_name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ListCard(models.Model):
+    list_id = models.ForeignKey(WorkspaceList, on_delete=models.PROTECT)
+    card_name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
