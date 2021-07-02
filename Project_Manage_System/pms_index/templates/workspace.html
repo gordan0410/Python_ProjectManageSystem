@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-6 ml-3">
-            <div class="card shadow-sm rounded" style="height: 100px">
+            <div class="card shadow-sm rounded title_region">
                 <div class="card-body">
                     <div class="card-title">
                         <h5 class="font-weight-bold">{{ workspace_title.name }}</h5>
@@ -28,26 +28,210 @@
     </div>
     <br>
     <div class="row">
-        <div class="col-md">
-            <div class="card shadow-sm rounded">
-                <div class="card-body">
-                    <div class="row flex-row flex-nowrap overflow-auto" style="height: 500px">
-                        {% for project_title in project_titles %}
-                        <div class="col-lg-3">
-                            <div class="card shadow-sm rounded"  style="min-width: 280px">
-                                <div class="card-header">
-                                    {{ project_title }}
+        <div class="col">
+            <div class="card shadow-sm rounded data_region">
+                <div class="card-body bg-light overflow-auto">
+                    <div class="row flex-nowrap list_platform">
+                        {% for list_title, card_titles in list_all.items %}
+                        <div class="workspace_list bg-white shadow-sm rounded border">
+                            <div class="workspace_list_size_inside">
+                                <div class="col">
+                                    <p class="list_title_size">{{ list_title }}</p>
                                 </div>
-                                <div class="card-body">
-                                    {{ project_descript }}
+                                <div class="col list_projects">
+                                    {% for card_title in card_titles %}
+                                    <div class="card shadow-sm rounded project_card_size">
+                                        <div class="card-body">
+                                            {{ card_title }}
+                                        </div>
+                                    </div>
+                                    <br>
+                                    {% endfor %}
+                                </div>
+                                <br>
+                                <div class="col list_add_project">
+                                    <div class="card shadow-sm rounded add_show add_card_size">
+                                        <button type="button" class="btn btn-success btn-sm add_btn">
+                                            <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2"
+                                                 height="30px"
+                                                 width="30px">
+                                            新增事項
+                                        </button>
+                                    </div>
+                                    <div class="card shadow-sm rounded add_hide add_card_size">
+                                        <div class="card-body">
+                                            <div class="row mr-auto ml-auto mb-3 add_project_form">
+                                                <input type="text" class="form-control add_project_input"
+                                                       placeholder="為列表輸入標題...">
+                                            </div>
+                                            <div class="row float-right">
+                                                <button type="submit"
+                                                        class="btn btn-primary btn-sm mr-3 add_project_submit">
+                                                    Submit
+                                                </button>
+                                                <button type="button" class="close mr-3 add_close">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <br>
                         </div>
                         {% endfor %}
+                        <div class="col list_add add_card_size">
+                            <div class="card shadow-sm rounded add_show add_card_size">
+                                <button type="button" class="btn btn-success btn-sm add_btn">
+                                    <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2" height="30px" width="30px">
+                                    新增列表
+                                </button>
+                            </div>
+                            <div class="card shadow-sm rounded add_hide add_card_size">
+                                <div class="card-body">
+                                    <div class="row mr-auto ml-auto mb-3 add_list_form">
+                                        <input type="text" class="form-control add_list_input"
+                                               placeholder="為列表輸入標題...">
+                                    </div>
+                                    <div class="row float-right">
+                                        <button type="submit"
+                                                class="btn btn-primary btn-sm mr-3 add_list_submit">
+                                            Submit
+                                        </button>
+                                        <button type="button" class="close mr-3 add_close">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
+{% block style %}
+<style>
+
+    .add_hide{
+        display: none;
+        visibility: hidden;
+    }
+
+    .add_card_size {
+        width: 180px;
+    }
+
+    .list_add_project{
+        margin-bottom: 20px;
+    }
+
+    .project_card_size{
+        width: 170px;
+        height: 65px;
+    }
+
+    .list_projects{
+        max-height:400px;
+        overflow: auto;
+    }
+
+    .list_title_size{
+        width: 200px;
+        height: 24px;
+    }
+
+    .workspace_list{
+        margin-left: 1%;
+        height: 100%;
+    }
+
+    .workspace_list_size_inside{
+        margin-left: 6%;
+    }
+
+    .data_region{
+        min-height: 500px;
+    }
+
+    .title_region{
+        height: 100px;
+    }
+
+</style>
+<script>
+    // 新增專案
+    $(".list_platform").on("click", ".add_btn", function () {
+        $(this).parent(".add_show").hide();
+        $(this).parent().siblings(".add_hide").css("visibility", "visible");
+        $(this).parent().siblings(".add_hide").css("display", "flex");
+    })
+
+    $(".list_platform").on("click", ".add_close", function () {
+        $(this).parent().parent().parent().siblings(".add_show").show();
+        $(this).parent().parent().parent(".add_hide").hide();
+    })
+
+    $(".list_platform").on("click", ".add_project_submit", function () {
+        $(this).parent().parent().parent().siblings(".add_show").show();
+        $(this).parent().parent().parent(".add_hide").hide();
+        var input = $(this).parent().siblings(".add_project_form").children(".add_project_input").val();
+        $(this).parent().parent().parent().parent().siblings(".list_projects").append(
+            '<div class="card shadow-sm rounded project_card_size" style="width: 170px;height: 65px"><div class="card-body">' + input + '</div></div><br>'
+        );
+    })
+
+    $(".add_list_submit").click(function () {
+        $(this).parent().parent().parent().siblings(".add_show").show();
+        $(this).parent().parent().parent(".add_hide").hide();
+        var input = $(this).parent().siblings(".add_list_form").children(".add_list_input").val();
+        $(this).parent().parent().parent().parent(".list_add").before(
+            '<div class="workspace_list bg-white shadow-sm rounded border">'+
+            '<div class="workspace_list_size_inside">'+
+            '<div class="col">'+
+            '<p class="list_title_size">'+input+'</p>'+
+            '</div>'+
+            '<div class="col list_projects">'+
+            '<div class="card shadow-sm rounded project_card_size">'+
+            '<div class="card-body">'+
+            '</div>'+
+            '</div>'+
+            '<br>'+
+            '</div>'+
+            '<br>'+
+            '<div class="col list_add_project">'+
+            '<div class="card shadow-sm rounded add_show add_card_size">'+
+            '<button type="button" class="btn btn-success btn-sm add_btn">'+
+            "<img src=\"{% static 'images/plus-image.png' %}\" class=\"mb-1 mr-2\" height=\"30px\" width=\"30px\">"+
+            '新增事項'+
+            '</button>'+
+            '</div>'+
+            '<div class="card shadow-sm rounded add_hide add_card_size">'+
+            '<div class="card-body">'+
+            '<div class="row mr-auto ml-auto mb-3 add_project_form">'+
+            '<input type="text" class="form-control add_project_input"'+
+            'placeholder="為列表輸入標題...">'+
+            '</div>'+
+            '<div class="row float-right">'+
+            '<button type="submit"'+
+            'class="btn btn-primary btn-sm mr-3 add_project_submit">'+
+            'Submit'+
+            '</button>'+
+            '<button type="button" class="close mr-3 add_close">'+
+            '&times;'+
+            '</button>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'
+        );
+        $(".add_show").show();
+        $(".add_hide").hide();
+    })
+
+</script>
+
+{% endblock %}
