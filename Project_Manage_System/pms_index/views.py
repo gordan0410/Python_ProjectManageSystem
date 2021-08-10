@@ -270,12 +270,8 @@ def workspace_card_edit(request):
         card_title = request.POST.get('card_title')
         card_content = request.POST.get('card_content')
         list_card_obj = ListCard.objects.get(id=card_id)
-        if card_title != list_card_obj.card_name:
+        if card_title != list_card_obj.card_name or card_content != list_card_obj.card_content:
             list_card_obj.card_name = card_title
-            list_card_obj.save()
-            data = {"result": "success"}
-            return JsonResponse(data, safe=False)
-        elif card_content != list_card_obj.card_content:
             list_card_obj.card_content = card_content
             list_card_obj.save()
             data = {"result": "success"}

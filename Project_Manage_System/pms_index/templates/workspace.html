@@ -103,9 +103,11 @@
                             <li class="col list_add">
                                 <div class="card shadow-sm rounded add_show add_list_size">
                                     <button type="button" class="btn btn-success btn-sm add_btn">
-                                        <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2" height="30px"
+                                        <img src="{% static 'images/plus-image.png' %}"
+                                             class="float-left"
+                                             height="30px"
                                              width="30px">
-                                        新增列表
+                                        <p class="d-inline mr-3">新增列表</p>
                                     </button>
                                 </div>
                                 <div class="card shadow-sm rounded add_hide add_list_size">
@@ -137,26 +139,27 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">專案名稱：</h5>
-                    <p class="modal_title_name"></p>
-                    <input class="modal_title_input">
+                    <h5>專案名稱：</h5>
+                    <h5 class="modal_title" data-titleedit></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    專案內容：
-                    <button class="btn float-right p-0 m-0 dropright card_more"
-                            type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="true"
-                            data-flip="false">
-                        <img src="{% static 'images/more_icon1.png' %}"
-                             height="18" width="18">
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item card_delete" href="#">刪除</a>
+                    <div class="mb-2">
+                        專案內容：
+                        <button class="btn float-right p-0 m-0 dropright card_more"
+                                type="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="true"
+                                data-flip="false">
+                            <img src="{% static 'images/more_icon1.png' %}"
+                                 height="18" width="18">
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item card_delete" href="#">刪除</a>
+                        </div>
                     </div>
-                    <textarea rows="15" cols="64"></textarea>
+                    <p class="modal_description" data-descriptionedit></p>
                 </div>
                 <div class="modal-footer justify-content-start">
                     <button type="button" class="btn btn-primary card_edit_save">確認</button>
@@ -170,6 +173,7 @@
     <style>
         .add_btn {
             line-height: 200%;
+            font-size: 100%;
         }
 
         .add_hide {
@@ -205,10 +209,11 @@
         .list_title_size {
             width: 200px;
             height: 24px;
-            font-family: "Times New Roman";
-            font-weight: bold;
-            font-size: larger;
+            font-family:monospace;
+            font-size: 130%;
             margin-left: 5%;
+            text-align: center;
+            line-height: 24px;
         }
 
         .workspace_list {
@@ -262,6 +267,15 @@
             margin-right: 2.5%;
         }
 
+
+        .modal_description {
+            width: 100%;
+            height: 50vh;
+            border: #cccccc solid 1px;
+            resize: none;
+            padding: 2%;
+        }
+
     </style>
 {% endblock %}
 
@@ -290,7 +304,10 @@
             }
             return cookieValue;
         }
+
         const csrftoken = getCookie('csrftoken');
+
+        //more_icon hover
 
 
         //拖曳移動
@@ -397,8 +414,8 @@
                             '<li class="workspace_list bg-white shadow-sm rounded border" id="' + data["list_id"] + '">' +
                             '<div class="workspace_list_size_inside">' +
                             '<div class="col">' +
-                            '<div class="list_title_size">' + data["list_name"] +
-                            '<button class="btn float-right p-0 m-0 dropright list_more"' +
+                            '<div class="list_title_size my-2 pr-2">' + data["list_name"] +
+                            '<button class="btn float-right p-0 dropright list_more"' +
                             'type="button" data-toggle="dropdown"' +
                             'aria-haspopup="true" aria-expanded="true"' +
                             'data-flip="false">' +
@@ -407,18 +424,20 @@
                             '</button>' +
                             '<div class="dropdown-menu">' +
                             '<a class="dropdown-item list_delete" href="#">刪除</a>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>' +
-                            '<ul class="col list_projects sortable_connected_projects"></ul>' +
+                            '</div></div></div>' +
+                            '<ul class="col list_projects sortable_connected_projects">' +
+                            '</ul>' +
                             '<div class="col list_add_project">' +
-                            '<div class="card shadow-sm rounded add_show add_list_size">' +
+                            '<div class="card shadow-sm rounded add_show add_card_size">' +
                             '<button type="button" class="btn btn-success btn-sm add_btn">' +
-                            "<img src=\"{% static 'images/plus-image.png' %}\" class=\"mb-1 mr-2\" height=\"30px\" width=\"30px\">" +
-                            '新增事項' +
+                            "<img src=\"{% static 'images/plus-image.png' %}\"" +
+                            'class="float-left"' +
+                            'height="30px"' +
+                            'width="30px">' +
+                            '<p class="d-inline mr-3">新增事項</p>' +
                             '</button>' +
                             '</div>' +
-                            '<div class="card shadow-sm rounded add_hide add_list_size">' +
+                            '<div class="card shadow-sm rounded add_hide add_card_size">' +
                             '<div class="card-body">' +
                             '<div class="row mr-auto ml-auto mb-3 add_project_form">' +
                             '<input type="text" class="form-control add_project_input"' +
@@ -431,13 +450,7 @@
                             '</button>' +
                             '<button type="button" class="close mr-3 add_close">' +
                             '&times;' +
-                            '</button>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>' +
-                            '</div>' +
-                            '</li>'
+                            '</button></div></div></div> </div></div></li>'
                         );
                         initial_sortable_card();
                         initial_sortable_list();
@@ -544,8 +557,8 @@
                 success: function (data) {
                     result = data['result']
                     if (result == "success") {
-                        modal.find('.modal_title_name').text(card_title);
-                        modal.find('textarea').val(data["card_content"]);
+                        modal.find('.modal_title').text(card_title);
+                        modal.find('.modal_description').text(data["card_content"]);
                         modal.find('.card_edit_save').attr('id', card_id);
                     } else {
                         $('#errormsg').html("新增失敗!");
@@ -553,11 +566,33 @@
                 },
             })
         })
+        //modal_title點選即修改
+        $('body').on('click', '[data-titleedit]', function () {
+            var $el = $(this);
+            var $input = $('<input class="modal_title" />').val($el.text());
+            $el.replaceWith($input);
+            var save = function () {
+                var $h5 = $('<h5 class="modal_title" data-titleedit />').text($input.val());
+                $input.replaceWith($h5);
+            };
+            $input.one('blur', save).focus();
+        });
+        //modal_description點選即修改
+        $('body').on('click', '[data-descriptionedit]', function () {
+            var $el = $(this);
+            var $input = $('<textarea class="modal_description" />').val($el.text());
+            $el.replaceWith($input);
+            var save = function () {
+                var $p = $('<p class="modal_description" data-descriptionedit />').text($input.val());
+                $input.replaceWith($p);
+            };
+            $input.one('blur', save).focus();
+        });
         //modal修改後儲存
         $('.modal').on('click', '.card_edit_save', function () {
             var card_id = $('#card_modal').data('card_id')
-            var card_title = $(this).parent().siblings('.modal-header').children('input').val()
-            var card_content = $(this).parent().siblings('.modal-body').children('textarea').val()
+            var card_title = $(this).parent().siblings('.modal-header').children('.modal_title').text()
+            var card_content = $(this).parent().siblings('.modal-body').find('.modal_description').text()
             $.ajax({
                 url: "/workspace_card_edit/",
                 type: "POST",
@@ -568,18 +603,18 @@
                     'card_content': card_content,
                 },
                 success: function (data) {
-                    $(".list_platform").load(" .list_platform > *", function () {
-                        initial_sortable_card();
-                    });
+                    result = data['result']
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_card();
+                        });
+                    } else {
+                        console.log(result)
+                    }
                     $('#card_modal').modal('hide');
                 }
             })
         })
-        //點擊後, 修改
-        $('.modal').on('click', '.modal_title_name', function () {
-            
-        })
-
 
         //刪除列表, 事項
         //刪除列表
