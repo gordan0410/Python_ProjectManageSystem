@@ -1,5 +1,5 @@
 from django import forms
-from .models import Projects, ProjectMembers
+from .models import Projects, WorkspaceList, ListCard
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -20,21 +20,6 @@ class ProjectForm(forms.ModelForm):
             'descriptions': '工作區簡介',
             'visibility': '類別',
         }
-
-# class ProjectMembersForm(forms.ModelForm):
-#
-#     member_id: forms.ModelMultipleChoiceField(queryset=User.objects.none())
-#
-#     class Meta:
-#
-#         # model = ProjectMembers
-#         fields = ('member_id',)
-#         widgets = {
-#             'member_id': forms.SelectMultiple(attrs={'class': 'form-control'}),
-#         }
-#         labels = {
-#             'member_id': '專案使用者',
-#         }
 
 
 class RegisterForm(UserCreationForm):
@@ -85,4 +70,3 @@ class LoginForm(forms.Form):
         label="密碼",
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
-
