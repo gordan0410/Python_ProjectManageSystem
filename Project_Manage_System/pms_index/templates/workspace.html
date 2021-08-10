@@ -2,236 +2,646 @@
 
 
 {% block title %}
-<title>{{ workspace_title.name }}</title>
+    <title>{{ workspace_title.name }}</title>
 {% endblock %}
 
 {% load static %}
 
+{% block statics %}
+    <link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6 ml-3">
-            <div class="card shadow-sm rounded title_region">
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5 class="font-weight-bold">{{ workspace_title.name }}</h5>
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <div class="card-text">
-                        <p>{{ workspace_title.descriptions }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3"></div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col">
-            <div class="card shadow-sm rounded data_region">
-                <div class="card-body bg-light overflow-auto">
-                    <div class="row flex-nowrap list_platform">
-                        {% for list_title, card_titles in list_all.items %}
-                        <div class="workspace_list bg-white shadow-sm rounded border">
-                            <div class="workspace_list_size_inside">
-                                <div class="col">
-                                    <p class="list_title_size">{{ list_title }}</p>
-                                </div>
-                                <div class="col list_projects">
-                                    {% for card_title in card_titles %}
-                                    <div class="card shadow-sm rounded project_card_size">
-                                        <div class="card-body">
-                                            {{ card_title }}
-                                        </div>
-                                    </div>
-                                    <br>
-                                    {% endfor %}
-                                </div>
-                                <br>
-                                <div class="col list_add_project">
-                                    <div class="card shadow-sm rounded add_show add_card_size">
-                                        <button type="button" class="btn btn-success btn-sm add_btn">
-                                            <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2"
-                                                 height="30px"
-                                                 width="30px">
-                                            新增事項
-                                        </button>
-                                    </div>
-                                    <div class="card shadow-sm rounded add_hide add_card_size">
-                                        <div class="card-body">
-                                            <div class="row mr-auto ml-auto mb-3 add_project_form">
-                                                <input type="text" class="form-control add_project_input"
-                                                       placeholder="為列表輸入標題...">
-                                            </div>
-                                            <div class="row float-right">
-                                                <button type="submit"
-                                                        class="btn btn-primary btn-sm mr-3 add_project_submit">
-                                                    Submit
-                                                </button>
-                                                <button type="button" class="close mr-3 add_close">
-                                                    &times;
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6 ml-3">
+                <div class="card shadow-sm rounded title_region">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <h5 class="font-weight-bold workspace_title">{{ workspace_title.name }}</h5>
                         </div>
-                        {% endfor %}
-                        <div class="col list_add add_card_size">
-                            <div class="card shadow-sm rounded add_show add_card_size">
-                                <button type="button" class="btn btn-success btn-sm add_btn">
-                                    <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2" height="30px" width="30px">
-                                    新增列表
-                                </button>
-                            </div>
-                            <div class="card shadow-sm rounded add_hide add_card_size">
-                                <div class="card-body">
-                                    <div class="row mr-auto ml-auto mb-3 add_list_form">
-                                        <input type="text" class="form-control add_list_input"
-                                               placeholder="為列表輸入標題...">
-                                    </div>
-                                    <div class="row float-right">
-                                        <button type="submit"
-                                                class="btn btn-primary btn-sm mr-3 add_list_submit">
-                                            Submit
-                                        </button>
-                                        <button type="button" class="close mr-3 add_close">
-                                            &times;
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="card-text">
+                            <p>{{ workspace_title.descriptions }}</p>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-md-3"></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col">
+                <div class="card shadow-sm rounded data_region">
+                    <div class="card-body bg-light overflow-auto">
+                        <ul class="row flex-nowrap list_platform sortable_connected_lists">
+                            {% for list_obj in workspace_lists %}
+                                <li class="workspace_list bg-white shadow-sm rounded border" id="{{ list_obj.id }}">
+                                    <div class="workspace_list_size_inside">
+                                        <div class="col">
+                                            <div class="list_title_size my-2 pr-2">
+                                                {{ list_obj.list_name }}
+                                                <button class="btn float-right p-0 dropright list_more"
+                                                        type="button" data-toggle="dropdown"
+                                                        aria-haspopup="true" aria-expanded="true"
+                                                        data-flip="false">
+                                                    <img src="{% static 'images/more_icon1.png' %}"
+                                                         height="18" width="18">
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item list_delete" href="#">刪除</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <ul class="col list_projects sortable_connected_projects">
+                                            {% for card_key, card_value in all_lists_cards.items %}
+                                                {% if card_key == list_obj.id %}
+                                                    {% for card_obj in card_value %}
+                                                        <li class="card shadow-sm rounded project_card_size"
+                                                            id="{{ card_obj.id }}">
+                                                            <div class="card-body">
+                                                                {{ card_obj.card_name }}
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                        <div class="col list_add_project">
+                                            <div class="card shadow-sm rounded add_show add_card_size">
+                                                <button type="button" class="btn btn-success btn-sm add_btn">
+                                                    <img src="{% static 'images/plus-image.png' %}"
+                                                         class="float-left"
+                                                         height="30px"
+                                                         width="30px">
+                                                    <p class="d-inline mr-3">新增事項</p>
+                                                </button>
+                                            </div>
+                                            <div class="card shadow-sm rounded add_hide add_card_size">
+                                                <div class="card-body">
+                                                    <div class="row mr-auto ml-auto mb-3 add_project_form">
+                                                        <input type="text" class="form-control add_project_input"
+                                                               placeholder="為列表輸入標題...">
+                                                    </div>
+                                                    <div class="row float-right">
+                                                        <button type="submit"
+                                                                class="btn btn-primary btn-sm mr-3 add_project_submit">
+                                                            Submit
+                                                        </button>
+                                                        <button type="button" class="close mr-3 add_close">
+                                                            &times;
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            <li class="col list_add">
+                                <div class="card shadow-sm rounded add_show add_list_size">
+                                    <button type="button" class="btn btn-success btn-sm add_btn">
+                                        <img src="{% static 'images/plus-image.png' %}" class="mb-1 mr-2" height="30px"
+                                             width="30px">
+                                        新增列表
+                                    </button>
+                                </div>
+                                <div class="card shadow-sm rounded add_hide add_list_size">
+                                    <div class="card-body">
+                                        <div class="row mr-auto ml-auto mb-3 add_list_form">
+                                            <input type="text" class="form-control add_list_input"
+                                                   placeholder="為列表輸入標題...">
+                                        </div>
+                                        <div class="row float-right">
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-sm mr-3 add_list_submit">
+                                                Submit
+                                            </button>
+                                            <button type="button" class="close mr-3 add_close">
+                                                &times;
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+    <!--  card_modal  -->
+    <div class="modal fade" tabindex="-1" id="card_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">專案名稱：</h5>
+                    <p class="modal_title_name"></p>
+                    <input class="modal_title_input">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    專案內容：
+                    <button class="btn float-right p-0 m-0 dropright card_more"
+                            type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="true"
+                            data-flip="false">
+                        <img src="{% static 'images/more_icon1.png' %}"
+                             height="18" width="18">
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item card_delete" href="#">刪除</a>
+                    </div>
+                    <textarea rows="15" cols="64"></textarea>
+                </div>
+                <div class="modal-footer justify-content-start">
+                    <button type="button" class="btn btn-primary card_edit_save">確認</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 {% block style %}
-<style>
+    <style>
+        .add_btn {
+            line-height: 200%;
+        }
 
-    .add_hide{
-        display: none;
-        visibility: hidden;
-    }
+        .add_hide {
+            display: none;
+            visibility: hidden;
+        }
 
-    .add_card_size {
-        width: 180px;
-    }
+        .add_list_size {
+            width: 180px;
+        }
 
-    .list_add_project{
-        margin-bottom: 20px;
-    }
+        .add_card_size {
+            margin: auto;
+            width: 180px;
+        }
 
-    .project_card_size{
-        width: 170px;
-        height: 65px;
-    }
+        .list_add_project {
+            margin-bottom: 10%;
+        }
 
-    .list_projects{
-        max-height:400px;
-        overflow: auto;
-    }
+        .project_card_size {
+            width: 170px;
+            height: 65px;
+        }
 
-    .list_title_size{
-        width: 200px;
-        height: 24px;
-    }
+        .list_projects {
+            max-height: 400px;
+            min-height: 45px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
 
-    .workspace_list{
-        margin-left: 1%;
-        height: 100%;
-    }
+        .list_title_size {
+            width: 200px;
+            height: 24px;
+            font-family: "Times New Roman";
+            font-weight: bold;
+            font-size: larger;
+            margin-left: 5%;
+        }
 
-    .workspace_list_size_inside{
-        margin-left: 6%;
-    }
+        .workspace_list {
+            margin-left: 1%;
+            margin-right: 1%;
+            height: 100%;
+        }
 
-    .data_region{
-        min-height: 500px;
-    }
+        .workspace_list_size_inside {
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+        }
 
-    .title_region{
-        height: 100px;
-    }
+        .data_region {
+            min-height: 75vh;
+        }
 
-</style>
-<script>
-    // 新增專案
-    $(".list_platform").on("click", ".add_btn", function () {
-        $(this).parent(".add_show").hide();
-        $(this).parent().siblings(".add_hide").css("visibility", "visible");
-        $(this).parent().siblings(".add_hide").css("display", "flex");
-    })
+        .title_region {
+            height: 80%;
+        }
 
-    $(".list_platform").on("click", ".add_close", function () {
-        $(this).parent().parent().parent().siblings(".add_show").show();
-        $(this).parent().parent().parent(".add_hide").hide();
-    })
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
 
-    $(".list_platform").on("click", ".add_project_submit", function () {
-        $(this).parent().parent().parent().siblings(".add_show").show();
-        $(this).parent().parent().parent(".add_hide").hide();
-        var input = $(this).parent().siblings(".add_project_form").children(".add_project_input").val();
-        $(this).parent().parent().parent().parent().siblings(".list_projects").append(
-            '<div class="card shadow-sm rounded project_card_size" style="width: 170px;height: 65px"><div class="card-body">' + input + '</div></div><br>'
-        );
-    })
+        li.project_card_size {
+            margin-bottom: 10%;
+            margin-right: 5%;
+            margin-left: 5%;
+        }
 
-    $(".add_list_submit").click(function () {
-        $(this).parent().parent().parent().siblings(".add_show").show();
-        $(this).parent().parent().parent(".add_hide").hide();
-        var input = $(this).parent().siblings(".add_list_form").children(".add_list_input").val();
-        $(this).parent().parent().parent().parent(".list_add").before(
-            '<div class="workspace_list bg-white shadow-sm rounded border">'+
-            '<div class="workspace_list_size_inside">'+
-            '<div class="col">'+
-            '<p class="list_title_size">'+input+'</p>'+
-            '</div>'+
-            '<div class="col list_projects">'+
-            '<div class="card shadow-sm rounded project_card_size">'+
-            '<div class="card-body">'+
-            '</div>'+
-            '</div>'+
-            '<br>'+
-            '</div>'+
-            '<br>'+
-            '<div class="col list_add_project">'+
-            '<div class="card shadow-sm rounded add_show add_card_size">'+
-            '<button type="button" class="btn btn-success btn-sm add_btn">'+
-            "<img src=\"{% static 'images/plus-image.png' %}\" class=\"mb-1 mr-2\" height=\"30px\" width=\"30px\">"+
-            '新增事項'+
-            '</button>'+
-            '</div>'+
-            '<div class="card shadow-sm rounded add_hide add_card_size">'+
-            '<div class="card-body">'+
-            '<div class="row mr-auto ml-auto mb-3 add_project_form">'+
-            '<input type="text" class="form-control add_project_input"'+
-            'placeholder="為列表輸入標題...">'+
-            '</div>'+
-            '<div class="row float-right">'+
-            '<button type="submit"'+
-            'class="btn btn-primary btn-sm mr-3 add_project_submit">'+
-            'Submit'+
-            '</button>'+
-            '<button type="button" class="close mr-3 add_close">'+
-            '&times;'+
-            '</button>'+
-            '</div>'+
-            '</div>'+
-            '</div>'+
-            '</div>'+
-            '</div>'+
-            '</div>'
-        );
-        $(".add_show").show();
-        $(".add_hide").hide();
-    })
+        .list_shadow {
+            width: 200px;
+            height: 50px;
+            background-color: #ffffff;
+            border-color: #ffffff;
+            margin-bottom: 25px;
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+        }
 
-</script>
+        .card_shadow {
+            width: 170px;
+            height: 65px;
+            background-color: #ebecf0;
+            border-color: #ebecf0;
+            margin-bottom: 25px;
+            margin-left: 2.5%;
+            margin-right: 2.5%;
+        }
 
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script>
+        //初始化拖曳移動
+        $(function () {
+            initial_sortable_card();
+            initial_sortable_list();
+        })
+
+
+        //django_ajax_csrf取得
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+
+
+        //拖曳移動
+        //拖曳移動事項並儲存
+        function initial_sortable_card() {
+            $(".list_projects").sortable({
+                connectWith: ".sortable_connected_projects",
+                placeholder: "card_shadow",
+                dropOnEmpty: true,
+                // 標記來源list
+                start: function (event, ui) {
+                    $(ui.item).parent().parent().parent(".workspace_list").addClass("data-previndex");
+                },
+                stop: function (event, ui) {
+                    var target_id = $(ui.item).attr("id");
+                    var target_to_list = $(ui.item).parent().parent().parent(".workspace_list").attr("id");
+                    var target_to_list_card_order = []
+                    $(".workspace_list#" + target_to_list + " .project_card_size").each(function () {
+                        target_to_list_card_order.push(this.id);
+                    });
+                    var origin_list_id = $(".data-previndex").attr("id")
+                    var origin_list_card_order = []
+                    $(".data-previndex .project_card_size").each(function () {
+                        origin_list_card_order.push(this.id);
+                    });
+                    $.ajax({
+                        url: '/workspace_card_switch/',
+                        type: 'POST',
+                        headers: {'X-CSRFToken': csrftoken},
+                        data: {
+                            'target_id': target_id,
+                            'target_to_list': target_to_list,
+                            'target_to_list_card_order[]': target_to_list_card_order,
+                            'origin_list_id': origin_list_id,
+                            'origin_list_card_order[]': origin_list_card_order,
+                        },
+                        success: function (data) {
+                            console.log(data)
+                        },
+                    });
+                    $(".data-previndex").removeClass("data-previndex")
+                },
+            }).sortable("refresh");
+        }
+        //拖曳移動列表並儲存
+        function initial_sortable_list() {
+            $(".list_platform").sortable({
+                connectWith: ".sortable_connected_lists",
+                placeholder: "list_shadow",
+                dropOnEmpty: true,
+                items: "li.workspace_list",
+                update: function (event, ui) {
+                    var list_of_all_position = $(".workspace_list").map(function () {
+                        return $(this).attr('id');
+                    }).get().join();
+                    var workspace_id = {{ workspace_title.id }};
+                    $.ajax({
+                        url: '/workspace_list_switch/',
+                        type: 'POST',
+                        headers: {'X-CSRFToken': csrftoken},
+                        data: {
+                            "list_of_all_position": list_of_all_position,
+                            "workspace_id": workspace_id,
+                        },
+                    })
+                }
+            }).sortable("refresh");
+        }
+
+
+        //新增列表, 事項
+        // 點擊新增鈕, add_show隱藏, add_hide顯示
+        $(".list_platform").on("click", ".add_btn", function () {
+            $(this).parent(".add_show").hide();
+            $(this).parent().siblings(".add_hide").css("visibility", "visible");
+            $(this).parent().siblings(".add_hide").css("display", "flex");
+        });
+        // 點擊取消鈕"X", add_show顯示, add_hide隱藏
+        $(".list_platform").on("click", ".add_close", function () {
+            $(this).parent().parent().parent().siblings(".add_show").show();
+            $(this).parent().parent().parent(".add_hide").hide();
+        });
+        // 新增列表
+        $('body').on('click', ".add_list_submit", function () {
+            $(this).parent().parent().parent().siblings(".add_show").show();
+            $(this).parent().parent().parent(".add_hide").hide();
+            //取input值
+            var input = $(this).parent().siblings(".add_list_form").children(".add_list_input").val();
+            var workspace_id = "{{ workspace_title.id }}";
+            //ajax
+            $.ajax({
+                url: '/workspace_list_add/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    add_list_name: input,
+                    workspace_id: workspace_id,
+                },
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+
+                        $(".list_add").before(
+                            '<li class="workspace_list bg-white shadow-sm rounded border" id="' + data["list_id"] + '">' +
+                            '<div class="workspace_list_size_inside">' +
+                            '<div class="col">' +
+                            '<div class="list_title_size">' + data["list_name"] +
+                            '<button class="btn float-right p-0 m-0 dropright list_more"' +
+                            'type="button" data-toggle="dropdown"' +
+                            'aria-haspopup="true" aria-expanded="true"' +
+                            'data-flip="false">' +
+                            "<img src=\"{% static 'images/more_icon1.png' %}\"" +
+                            'height="18" width="18">' +
+                            '</button>' +
+                            '<div class="dropdown-menu">' +
+                            '<a class="dropdown-item list_delete" href="#">刪除</a>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<ul class="col list_projects sortable_connected_projects"></ul>' +
+                            '<div class="col list_add_project">' +
+                            '<div class="card shadow-sm rounded add_show add_list_size">' +
+                            '<button type="button" class="btn btn-success btn-sm add_btn">' +
+                            "<img src=\"{% static 'images/plus-image.png' %}\" class=\"mb-1 mr-2\" height=\"30px\" width=\"30px\">" +
+                            '新增事項' +
+                            '</button>' +
+                            '</div>' +
+                            '<div class="card shadow-sm rounded add_hide add_list_size">' +
+                            '<div class="card-body">' +
+                            '<div class="row mr-auto ml-auto mb-3 add_project_form">' +
+                            '<input type="text" class="form-control add_project_input"' +
+                            'placeholder="為列表輸入標題...">' +
+                            '</div>' +
+                            '<div class="row float-right">' +
+                            '<button type="submit"' +
+                            'class="btn btn-primary btn-sm mr-3 add_project_submit">' +
+                            'Submit' +
+                            '</button>' +
+                            '<button type="button" class="close mr-3 add_close">' +
+                            '&times;' +
+                            '</button>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</li>'
+                        );
+                        initial_sortable_card();
+                        initial_sortable_list();
+                    } else {
+                        $('#errormsg').html("新增失敗!");
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    // $('#post').html(msg);
+                },
+            });
+            $(".add_show").show();
+            $(".add_hide").hide();
+        })
+        // 新增事項
+        $(".list_platform").on("click", ".add_project_submit", function () {
+            //取input值
+            var input = $(this).parent().siblings(".add_project_form").children(".add_project_input").val();
+            //以me替代this選擇, 以利ajax內使用
+            var me = this;
+            var list_id = $(this).parent().parent().parent().parent().parent().parent('.workspace_list').attr("id");
+            //ajax
+            $.ajax({
+                url: '/workspace_card_add/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    add_project_name: input,
+                    list_id: list_id,
+                },
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+                        $(me).parent().parent().parent().parent().siblings(".list_projects").append(
+                            '<li class="card shadow-sm rounded project_card_size" id="' + data['card_id'] +
+                            '"><div class="card-body">' + data['card_name'] +
+                            '</div></li>'
+                        );
+                    } else {
+                        $('#errormsg').html("新增失敗!");
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    var msg = '';
+                    if (jqXHR.status === 0) {
+                        msg = 'Not connect.\n Verify Network.';
+                    } else if (jqXHR.status == 404) {
+                        msg = 'Requested page not found. [404]';
+                    } else if (jqXHR.status == 500) {
+                        msg = 'Internal Server Error [500].';
+                    } else if (exception === 'parsererror') {
+                        msg = 'Requested JSON parse failed.';
+                    } else if (exception === 'timeout') {
+                        msg = 'Time out error.';
+                    } else if (exception === 'abort') {
+                        msg = 'Ajax request aborted.';
+                    } else {
+                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                    }
+                    // $('#post').html(msg);
+                },
+            });
+
+            $(this).parent().parent().parent().siblings(".add_show").show();
+            $(this).parent().parent().parent(".add_hide").hide();
+        });
+
+
+        //card詳細資料
+        //點擊card後跳出modal
+        $('body').on('click', '.project_card_size', function () {
+            $('#card_modal').modal('show', $(this));
+        })
+        //modal資料
+        $('#card_modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget)
+            var card_title = button.children('.card-body').text().trim()
+            var card_id = button.attr('id')
+            var modal = $(this)
+            $('#card_modal').data('card_id', card_id);
+            $.ajax({
+                url: "/workspace_card_edit/",
+                type: "GET",
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'card_id': card_id
+                },
+                success: function (data) {
+                    result = data['result']
+                    if (result == "success") {
+                        modal.find('.modal_title_name').text(card_title);
+                        modal.find('textarea').val(data["card_content"]);
+                        modal.find('.card_edit_save').attr('id', card_id);
+                    } else {
+                        $('#errormsg').html("新增失敗!");
+                    }
+                },
+            })
+        })
+        //modal修改後儲存
+        $('.modal').on('click', '.card_edit_save', function () {
+            var card_id = $('#card_modal').data('card_id')
+            var card_title = $(this).parent().siblings('.modal-header').children('input').val()
+            var card_content = $(this).parent().siblings('.modal-body').children('textarea').val()
+            $.ajax({
+                url: "/workspace_card_edit/",
+                type: "POST",
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'card_id': card_id,
+                    'card_title': card_title,
+                    'card_content': card_content,
+                },
+                success: function (data) {
+                    $(".list_platform").load(" .list_platform > *", function () {
+                        initial_sortable_card();
+                    });
+                    $('#card_modal').modal('hide');
+                }
+            })
+        })
+        //點擊後, 修改
+        $('.modal').on('click', '.modal_title_name', function () {
+            
+        })
+
+
+        //刪除列表, 事項
+        //刪除列表
+        $("body").on('click', '.list_delete', function () {
+            var list_id = $(this).parent().parent().parent().parent().parent('.workspace_list').attr('id');
+            var workspace_list_order = [];
+            $(this).parent().parent().parent().parent().parent().siblings('.workspace_list').each(function () {
+                workspace_list_order.push(this.id);
+            });
+            if ($('.workspace_list#' + list_id + ' .project_card_size').length) {
+                var list_card_exist = true
+            } else {
+                var list_card_exist = false
+            }
+            $.ajax({
+                url: '/workspace_list_delete/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'list_id': list_id,
+                    'workspace_list_order': workspace_list_order,
+                    'list_card_exist': list_card_exist,
+                },
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_card();
+                        });
+                    } else {
+                        $('#errormsg').html("刪除失敗!");
+                    }
+                }
+            })
+        })
+        //刪除事項
+        $("body").on('click', '.card_delete', function () {
+            var card_id = $(this).closest('.modal').data('card_id');
+            var list_card_order = [];
+            $(this).parents('.modal').siblings('.container-fluid').find(".project_card_size#" + card_id).siblings().each(function () {
+                list_card_order.push(this.id);
+            });
+            $.ajax({
+                url: '/workspace_card_delete/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'card_id': card_id,
+                    'list_card_order': list_card_order,
+                },
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+                        $(".workspace_list#" + data['list_id']).load(" .workspace_list#" + data['list_id'] + " > *", function () {
+                            initial_sortable_card();
+                        });
+                        $('#card_modal').modal('hide');
+                    } else {
+                        $('#errormsg').html("刪除失敗!");
+                    }
+                }
+            });
+        })
+    </script>
 {% endblock %}
