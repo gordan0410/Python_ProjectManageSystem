@@ -27,10 +27,10 @@
 
 
 {% block navbar %}
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: #292961">
     <nav class="navbar justify-content-center">
         <a href="{% url 'Index' %}">
-            <img src="{% static 'images/GitLab_Logo.png' %}" alt="X" height="24" width="24">
+            <img src="{% static 'images/pms_logo5.png' %}" height="40" width="30">
         </a>
     </nav>
     <div class="dropdown-divider"></div>
@@ -44,13 +44,16 @@
     <div class="row">
         <div class="col-md"></div>
         <div class="col-md-10">
-            <h1 style="font-weight: normal">GitLab</h1>
+            <h1 style="font-style: oblique">PMSystem</h1>
+            <div class="dropdown-divider"></div>
         </div>
         <div class="col-md"></div>
     </div>
     <div class="row">
-        <div class="col-md"></div>
+        <div class="col-md">
+        </div>
         <div class="col-md-6 order-1 order-md-0">
+            <br>
             <h4 style="font-weight: normal">A complete DevOps platform</h4>
             <p class="text-muted">
                 GitLab is a single application for the entire software development lifecycle.
@@ -58,8 +61,8 @@
             <p></p>
             <p class="text-muted">This is a self-managed instance of GitLab.</p>
         </div>
-
         <div class="col-md-4 order-0 order-md-1">
+            <br>
             <div class="card">
                 <div class="card-body">
                     <form action="" method="POST">
