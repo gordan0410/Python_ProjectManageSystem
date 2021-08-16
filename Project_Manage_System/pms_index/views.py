@@ -12,9 +12,22 @@ import json
 
 @login_required(login_url="Login")
 def pms_index(request):
-    my_projects = Projects.objects.filter(visibility_id=1)
-    public_projects = Projects.objects.filter(visibility_id=2)
-    group_projects = Projects.objects.filter(visibility_id=3)
+    my_projects = []
+    projects_list_include_myself_as_owner = ProjectMembers.objects.filter(member_id=request.user).filter(member_status='Owner')
+    for projects in projects_list_include_myself_as_owner:
+        projects_list_private = Projects.objects.filter(id=projects.project_id_id).filter(visibility_id=1).filter(status='active').values()
+        if projects_list_private:
+            my_projects.append({'id': projects_list_private[0]['id'], 'name': projects_list_private[0]['name']})
+
+    group_projects = []
+    projects_list_include_myself = ProjectMembers.objects.filter(member_id=request.user)
+    for projects in projects_list_include_myself:
+        projects_list_group = Projects.objects.filter(id=projects.project_id_id).filter(visibility_id=3).filter(status='active').values()
+        if projects_list_group:
+            group_projects.append({'id': projects_list_group[0]['id'], 'name': projects_list_group[0]['name']})
+
+    public_projects = Projects.objects.filter(visibility_id=2).filter(status='active').values()
+
     all_users = User.objects.exclude(username=request.user)
     new_project_form = ProjectForm()
     visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)

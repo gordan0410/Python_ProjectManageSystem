@@ -2,157 +2,209 @@
 
 
 {% block title %}
-<title>PMSystem</title>
+    <title>PMSystem</title>
 {% endblock %}
 
 
 {% load static %}
 
 {% block messages %}
-{% if messages %}
-<div class="container-fluid">
-    {% for message in messages %}
-    {% if "Workspace" in message.tags %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
-        {% endif %}
-        {% endfor %}
-        {% if messages%}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+    {% if messages %}
+        <div class="container-fluid">
+            {% for message in messages %}
+                {% if "Workspace" in message.tags %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}
+                {% endif %}
+            {% endfor %}
+            {% if messages %}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+            {% endif %}
+        </div>
     {% endif %}
-</div>
-{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md">
-        </div>
-        <div class="col-md-9">
-            <nav class="navbar">
-                <h2>工作區列表</h2>
-                <a class="btn btn-primary the-modal" data-toggle="modal" data-target="#NewWorkspace">
-                    新增工作區
-                </a>
-                <div class="modal fade" id="NewWorkspace">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">新增工作區</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="{% url 'CreateNewWorkspace' %}" method="POST">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label>{{ new_project_form.name.label }}</label>
-                                        {{ new_project_form.name }}
-                                    </div>
-                                    <div class="form-group">
-                                        <label>{{ new_project_form.descriptions.label }}</label>
-                                        {{ new_project_form.descriptions }}
-                                    </div>
-                                    {% for visibility in new_project_form.visibility %}
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        {{ visibility.tag }}
-                                        <label class="custom-control-label" for="{{visibility.id_for_label}}">
-                                            {% if forloop.counter0 == 0 %}
-                                            {{ visibility_label.0 }}
-                                            {% elif forloop.counter0 == 1 %}
-                                            {{ visibility_label.1 }}
-                                            {% elif forloop.counter0 == 2 %}
-                                            {{ visibility_label.2 }}
-                                            {% endif %}
-                                        </label>
-                                    </div>
-                                    {% endfor %}
-                                    <hr>
-                                    <div class="flex justify-content-end">
-                                        <input class="btn btn-success" type="submit" name="save_next" value="儲存">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                                    </div>
-                                </form>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md">
+            </div>
+            <div class="col-md-9">
+                <nav class="navbar">
+                    <h2>工作區列表</h2>
+                    <a class="btn btn-primary the-modal" data-toggle="modal" data-target="#NewWorkspace">
+                        新增工作區
+                    </a>
+                    <div class="modal fade" id="NewWorkspace">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">新增工作區</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'CreateNewWorkspace' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label>{{ new_project_form.name.label }}</label>
+                                            {{ new_project_form.name }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label>{{ new_project_form.descriptions.label }}</label>
+                                            {{ new_project_form.descriptions }}
+                                        </div>
+                                        {% for visibility in new_project_form.visibility %}
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                {{ visibility.tag }}
+                                                <label class="custom-control-label" for="{{ visibility.id_for_label }}">
+                                                    {% if forloop.counter0 == 0 %}
+                                                        {{ visibility_label.0 }}
+                                                    {% elif forloop.counter0 == 1 %}
+                                                        {{ visibility_label.2 }}
+                                                    {% elif forloop.counter0 == 2 %}
+                                                        {{ visibility_label.1 }}
+                                                    {% endif %}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                        <hr>
+                                        <div class="flex justify-content-end">
+                                            <input class="btn btn-success" type="submit" name="save_next" value="儲存">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </nav>
-            <br>
-            <nav class="navbar">
-                <h4>我的工作區</h4>
-            </nav>
-            <hr class="solid mt-0">
-            <div class="row">
-                {% for project in my_projects %}
-                <div class="col-md-4">
-                    <a href="{% url 'Workspace' project.id %}">
-                        <div class="card shadow-sm rounded">
-                            <div class="card-body">
-                                <h4>{{ project.name }}</h4>
-                                <br>
-                                <br>
-                                <br>
+                </nav>
+                <br>
+                <nav class="navbar">
+                    <h4>我的工作區</h4>
+                </nav>
+                <hr class="solid mt-0">
+                <div class="row">
+                        {% for project in my_projects %}
+                            <div class="col-md-3">
+                                <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
+                                   href="{% url 'Workspace' project.id %}">
+                                    <h4 class="workspace_title">{{ project.name }}</h4>
+                                    <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
+                                            type="button"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                        <img src="{% static "images/more_icon1.png" %}">
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
+                                    </ul>
+                                </a>
                             </div>
-                        </div>
-                    </a>
-                    <br>
-                    <br>
+                        {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            <nav class="navbar">
-                <h4>公共工作區</h4>
-            </nav>
-            <hr class="solid mt-0">
-            <div class="row">
-                {% for project in public_projects %}
-                <div class="col-md-4">
-                    <a href="{% url 'Workspace' project.id %}">
-                        <div class="card shadow-sm rounded">
-                            <div class="card-body">
-                                <h4>{{ project.name }}</h4>
-                                <br>
-                                <br>
-                                <br>
-                            </div>
+                <nav class="navbar">
+                    <h4>群組工作區</h4>
+                </nav>
+                <hr class="solid mt-0">
+                <div class="row">
+                    {% for project in group_projects %}
+                        <div class="col-md-3">
+                            <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
+                               href="{% url 'Workspace' project.id %}">
+                                <h4 class="workspace_title">{{ project.name }}</h4>
+                                <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
+                                        type="button"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <img src="{% static "images/more_icon1.png" %}">
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
+                                </ul>
+                            </a>
                         </div>
-                    </a>
-                    <br>
-                    <br>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            <nav class="navbar">
-                <h4>群組工作區</h4>
-            </nav>
-            <hr class="solid mt-0">
-            <div class="dropdown-divider"></div>
-            <div class="row">
-                {% for project in group_projects %}
-                <div class="col-md-4">
-                    <a href="{% url 'Workspace' project.id %}">
-                        <div class="card shadow-sm rounded">
-                            <div class="card-body">
-                                <h4>{{ project.name }}</h4>
-                                <br>
-                                <br>
-                                <br>
-                            </div>
+                <nav class="navbar">
+                    <h4>公開工作區</h4>
+                </nav>
+                <hr class="solid mt-0">
+                <div class="row">
+                    {% for project in public_projects %}
+                        <div class="col-md-3">
+                            <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
+                               href="{% url 'Workspace' project.id %}">
+                                <h4 class="workspace_title">{{ project.name }}</h4>
+                                <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
+                                        type="button"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <img src="{% static "images/more_icon1.png" %}">
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
+                                </ul>
+                            </a>
                         </div>
-                    </a>
-                    <br>
-                    <br>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        <div class="col-md">
+            <div class="col-md">
+            </div>
         </div>
     </div>
-</div>
+{% endblock %}
+{% block style %}
+    <style>
+        .workspace_btn {
+            width: 100%;
+            margin: 7%;
+            padding: 12%;
+        }
+
+        .workspace_title {
+            display: inline-block;
+        }
+
+        .workspace_more_btn {
+            padding: unset;
+            float: right;
+            visibility: hidden;
+            filter: invert(93%) sepia(8%) saturate(177%) hue-rotate(169deg) brightness(40%) contrast(88%);
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+        //more button hover
+        $('body').on('mouseenter', '.workspace_btn', function () {
+            $(this).find(".workspace_more_btn").css({"visibility": "visible"})
+        })
+        $('body').on('mouseleave', '.workspace_btn', function () {
+            $(this).find(".workspace_more_btn.nonetriggered").css({"visibility": "hidden"})
+        })
+        //more button 按下 button 效果恆亮, 取消則回復原狀
+        $('.workspace_btn').on('show.bs.dropdown', function (event) {
+            $(this).closest(".workspace_more_btn").css({"visibility": "visible"})
+            $(this).find('.workspace_more_btn').removeClass('nonetriggered')
+            $(this).closest('.workspace_btn').addClass('active')
+        })
+        $('.workspace_btn').on('hide.bs.dropdown', function (event) {
+            $(this).find('.workspace_more_btn').addClass('nonetriggered')
+            $(this).find(".workspace_more_btn.nonetriggered").css({"visibility": "hidden"})
+            $(this).closest('.workspace_btn').removeClass('active')
+        })
+        //more button 按下不跳轉
+        $('body').on('click', '.workspace_more_btn', function (event) {
+            event.preventDefault()
+        })
+        $('body').on('click', '.workspace_more_items', function (event) {
+            event.preventDefault()
+        })
+    </script>
 {% endblock %}
