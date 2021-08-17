@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container-fluid board">
         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6 ml-3">
@@ -171,6 +171,10 @@
 {% endblock %}
 {% block style %}
     <style>
+        .board{
+            padding-top: 4vh;
+        }
+
         .list_more {
             visibility: hidden;
         }
@@ -318,7 +322,6 @@
             $(this).addClass('bg-white').removeAttr('style')
         })
         $('body').on('mousedown', '.workspace_list', function (){
-            $(this).find('.list_more').css('visibility', 'hidden');
             $(this).addClass('bg-white').removeAttr('style')
         })
         //card_background_color hover
@@ -409,6 +412,8 @@
         $(".list_platform").on("click", ".add_close", function () {
             $(this).parent().parent().parent().siblings(".add_show").show();
             $(this).parent().parent().parent(".add_hide").hide();
+            $('.add_list_input').val('');
+            $('.add_project_input').val('');
         });
         // 新增列表
         $('body').on('click', ".add_list_submit", function () {
@@ -500,6 +505,7 @@
             });
             $(".add_show").show();
             $(".add_hide").hide();
+            $('.add_list_input').val('');
         })
         // 新增事項
         $(".list_platform").on("click", ".add_project_submit", function () {
@@ -549,9 +555,9 @@
                     // $('#post').html(msg);
                 },
             });
-
             $(this).parent().parent().parent().siblings(".add_show").show();
             $(this).parent().parent().parent(".add_hide").hide();
+            $('.add_project_input').val('');
         });
 
 

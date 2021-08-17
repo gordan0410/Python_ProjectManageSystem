@@ -2,7 +2,7 @@
 
 
 {% block title %}
-<title>sign in - PMSystem</title>
+    <title>sign in - PMSystem</title>
 {% endblock %}
 
 
@@ -10,90 +10,88 @@
 
 
 {% block messages %}
-<div class="container-fluid">
-    {% for message in messages %}
-    {% if "Login" in message.tags %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">{{message}}
-        {% endif %}
+    <div class="container-fluid">
+        {% for message in messages %}
+            {% if "Login" in message.tags %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}
+            {% endif %}
         {% endfor %}
-        {% if messages%}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        {% if messages %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
 {% endblock %}
 
 
 {% block navbar %}
-<div class="container-fluid" style="background-color: #292961">
-    <nav class="navbar justify-content-center">
+    <nav class="navbar justify-content-center" style="background-color: #292961">
         <a href="{% url 'Index' %}">
             <img src="{% static 'images/pms_logo5.png' %}" height="40" width="30">
         </a>
     </nav>
     <div class="dropdown-divider"></div>
-</div>
 {% endblock %}
 
 
 {% block content %}
-<br>
-<div class="container-md">
-    <div class="row">
-        <div class="col-md"></div>
-        <div class="col-md-10">
-            <h1 style="font-style: oblique">PMSystem</h1>
-            <div class="dropdown-divider"></div>
-        </div>
-        <div class="col-md"></div>
-    </div>
-    <div class="row">
-        <div class="col-md">
-        </div>
-        <div class="col-md-6 order-1 order-md-0">
-            <br>
-            <h4 style="font-weight: normal">A complete DevOps platform</h4>
-            <p class="text-muted">
-                GitLab is a single application for the entire software development lifecycle.
-                From project planning and source code management to CI/CD, monitoring, and security.</p>
-            <p></p>
-            <p class="text-muted">This is a self-managed instance of GitLab.</p>
-        </div>
-        <div class="col-md-4 order-0 order-md-1">
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <form action="" method="POST">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label>{{ login_form.username.label}}</label>
-                            {{ login_form.username }}
-                        </div>
-                        <div class="form-group">
-                            <label>{{ login_form.password.label }}</label>
-                            {{ login_form.password }}
-                        </div>
-                        {% if user == None %}
-                        <div class="form-group form-inline text-danger">
-                            帳號或密碼錯誤
-                        </div>
-                        {% endif %}
-                        <div class="form-group form-check">
-                            <input type="checkbox" class="form-check-input" id="rememberme">
-                            <label class="form-check-label" for="rememberme">Remember me</label>
-                            <a class="float-right" href="#">Forgot your password?</a>
-                        </div>
-                        <button class="btn btn-primary" type="submit" role="button">Sign in</button>
-                    </form>
-                </div>
+    <br>
+    <div class="container-md">
+        <div class="row">
+            <div class="col-md"></div>
+            <div class="col-md-10">
+                <h1 style="font-style: oblique">PMSystem</h1>
+                <div class="dropdown-divider"></div>
             </div>
-            <p>Don't have an account yet?
-                <a href="{% url 'Register' %}">Register now</a>
-            </p>
+            <div class="col-md"></div>
         </div>
-        <div class="col-md order-3 order-md-3"></div>
+        <div class="row">
+            <div class="col-md">
+            </div>
+            <div class="col-md-6 order-1 order-md-0">
+                <br>
+                <h4 style="font-weight: normal">A complete DevOps platform</h4>
+                <p class="text-muted">
+                    GitLab is a single application for the entire software development lifecycle.
+                    From project planning and source code management to CI/CD, monitoring, and security.</p>
+                <p></p>
+                <p class="text-muted">This is a self-managed instance of GitLab.</p>
+            </div>
+            <div class="col-md-4 order-0 order-md-1">
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>{{ login_form.username.label }}</label>
+                                {{ login_form.username }}
+                            </div>
+                            <div class="form-group">
+                                <label>{{ login_form.password.label }}</label>
+                                {{ login_form.password }}
+                            </div>
+                            {% if user == None %}
+                                <div class="form-group form-inline text-danger">
+                                    帳號或密碼錯誤
+                                </div>
+                            {% endif %}
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberme">
+                                <label class="form-check-label" for="rememberme">Remember me</label>
+                                <a class="float-right" href="#">Forgot your password?</a>
+                            </div>
+                            <button class="btn btn-primary" type="submit" role="button">Sign in</button>
+                        </form>
+                    </div>
+                </div>
+                <p>Don't have an account yet?
+                    <a href="{% url 'Register' %}">Register now</a>
+                </p>
+            </div>
+            <div class="col-md order-3 order-md-3"></div>
+        </div>
     </div>
-</div>
 {% endblock %}
