@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container-fluid workspace_platform">
         <div class="row">
             <div class="col-md">
             </div>
@@ -89,23 +89,23 @@
                 </nav>
                 <hr class="solid mt-0">
                 <div class="row">
-                        {% for project in my_projects %}
-                            <div class="col-md-3">
-                                <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
-                                   href="{% url 'Workspace' project.id %}">
-                                    <h4 class="workspace_title">{{ project.name }}</h4>
-                                    <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
-                                            type="button"
-                                            aria-haspopup="true"
-                                            aria-expanded="false">
-                                        <img src="{% static "images/more_icon1.png" %}">
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
-                                    </ul>
-                                </a>
-                            </div>
-                        {% endfor %}
+                    {% for project in my_projects %}
+                        <div class="col-md-3">
+                            <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
+                               href="{% url 'Workspace' project.id %}">
+                                <h4 class="workspace_title">{{ project.name }}</h4>
+                                <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
+                                        type="button"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <img src="{% static "images/more_icon1.png" %}">
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
+                                </ul>
+                            </a>
+                        </div>
+                    {% endfor %}
                 </div>
                 <nav class="navbar">
                     <h4>群組工作區</h4>
@@ -177,6 +177,10 @@
             visibility: hidden;
             filter: invert(93%) sepia(8%) saturate(177%) hue-rotate(169deg) brightness(40%) contrast(88%);
         }
+
+        .workspace_platform {
+            padding-top: 2vh;
+        }
     </style>
 {% endblock %}
 {% block script %}
@@ -205,6 +209,44 @@
         })
         $('body').on('click', '.workspace_more_items', function (event) {
             event.preventDefault()
+        })
+
+        //django_ajax_csrf取得
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        //workspace刪除
+        $('body').on('click', '.workspace_delete', function () {
+            var workspace_id = $(this).closest('.workspace_btn').attr('href').slice(11)
+            $.ajax({
+                url: '/workspace_delete/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {'workspace_id': workspace_id},
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+                        $('.workspace_platform').load(' .workspace_platform > *')
+                    } else {
+                        console.log(result)
+                    }
+                }
+            })
         })
     </script>
 {% endblock %}

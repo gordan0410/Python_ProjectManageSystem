@@ -8,6 +8,7 @@ urlpatterns = [
     path('register/', views.register, name="Register"),
     path('workspace/<int:pk>', views.workspace, name="Workspace"),
     path('workspace/create', views.create_workspace, name="CreateNewWorkspace"),
+    path('workspace_delete/', views.workspace_delete, name="WorkspaceDelete"),
     path('workspace_list_add/', views.workspace_list_add, name="ListAdd"),
     path('workspace_card_add/', views.workspace_card_add, name="CardAdd"),
     path('workspace_list_switch/', views.workspace_list_switch, name="ListSwitch"),

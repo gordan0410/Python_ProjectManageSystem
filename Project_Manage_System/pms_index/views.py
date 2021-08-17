@@ -34,6 +34,16 @@ def pms_index(request):
     return render(request, "index.html", locals())
 
 
+def workspace_delete(request):
+    try:
+        workspace_id = request.POST.get('workspace_id')
+        Projects.objects.filter(id=workspace_id).update(status='close')
+        data = {'result': 'success'}
+    except:
+        data = {'result': 'failed'}
+    return JsonResponse(data, safe=False)
+
+
 @login_required(login_url="Login")
 def create_workspace(request):
     if request.method == "POST":
