@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title xmlns="http://www.w3.org/1999/html">{{ workspace_obj.name }} - PMSystem</title>
+{% endblock %}
+
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row d-flex justify-content-center py-3">
+            <h4>{{ workspace_obj.name }}</h4>
+        </div>
+        <hr class="solid mt-0">
+        <div class="row px-5 justify-content-end pb-2">
+            <button type="button" class="btn btn-sm btn-light edit_btn">編輯</button>
+        </div>
+        {#    <div class="row px-5">#}
+        {#        <table class="table table-bordered">#}
+        {#            <tbody class="">#}
+        {#            <tr class="d-flex flex-fill workspace_name">#}
+        {#                <td class="col-3">工作區名稱</td>#}
+        {#                <td class="col-9 item">#}
+        {#                    <input type="text" name="name" value="{{ workspace_obj.name }}" class="form-control" maxlength="50"#}
+        {#                           required>#}
+        {#                </td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_descript">#}
+        {#                <td class="col-3">工作區描述</td>#}
+        {#                <td class="col-9 item">#}
+        {#                    <textarea name="descriptions" cols="40" rows="10" class="form-control" maxlength="1000"#}
+        {#                              required>{{ workspace_obj.descriptions }}</textarea>#}
+        {#                </td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_group">#}
+        {#                <td class="col-3">工作區組別</td>#}
+        {#                <td class="col-9 item">#}
+        {#                    {% for visibility in visibility_obj %}#}
+        {#                        <div class="form-check form-check-inline">#}
+        {#                            {% if visibility.id == workspace_obj.visibility_id %}#}
+        {#                                <input class="form-check-input" type="radio" name="visibility"#}
+        {#                                       value="{{ visibility.id }}" checked>#}
+        {#                            {% else %}#}
+        {#                                <input class="form-check-input" type="radio" name="visibility"#}
+        {#                                       value="{{ visibility.id }}">#}
+        {#                            {% endif %}#}
+        {#                            {% if visibility.id == 1 %}#}
+        {#                                <label class="form-check-label">私人</label>#}
+        {#                            {% elif visibility.id == 2 %}#}
+        {#                                <label class="form-check-label">公開</label>#}
+        {#                            {% elif visibility.id == 3 %}#}
+        {#                                <label class="form-check-label">群組</label>#}
+        {#                            {% endif %}#}
+        {#                        </div>#}
+        {#                    {% endfor %}#}
+        {#                </td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_owner">#}
+        {#                <td class="col-3">工作區擁有者</td>#}
+        {#                <td class="col-9 item">#}
+        {#                    {{ workspace_owner_obj.member_id }}#}
+        {#                </td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_member">#}
+        {#                <td class="col-3">工作區人員</td>#}
+        {#                <td class="col-9 item">#}
+        {#                    {% for member in workspace_member_obj %}#}
+        {#                        {% if member.id in workspace_member_developer_id_list %}#}
+        {#                            <div class="form-check form-check-inline">#}
+        {#                                <input class="form-check-input" type="checkbox" value="{{ member.id }}"#}
+        {#                                       checked>#}
+        {#                                {{ member.username }}#}
+        {#                            </div>#}
+        {#                        {% else %}#}
+        {#                            <div class="form-check form-check-inline">#}
+        {#                                <input class="form-check-input" type="checkbox" value="{{ member.id }}">#}
+        {#                                {{ member.username }}#}
+        {#                            </div>#}
+        {#                        {% endif %}#}
+        {#                    {% endfor %}#}
+        {#                </td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_created_date">#}
+        {#                <td class="col-3">工作區建立時間</td>#}
+        {#                <td class="col-9 item">{{ workspace_owner_obj.created_at }}</td>#}
+        {#            </tr>#}
+        {#            <tr class="d-flex flex-fill workspace_edit_date">#}
+        {#                <td class="col-3">工作區最後編輯時間</td>#}
+        {#                <td class="col-9 item">{{ workspace_owner_obj.updated_at }}</td>#}
+        {#            </tr>#}
+        {#            </tbody>#}
+        {#        </table>#}
+        {#    </div>#}
+        <div class="row px-5">
+            <table class="table table-bordered">
+                <tbody class="">
+                <tr class="d-flex flex-fill workspace_name">
+                    <td class="col-3">工作區名稱</td>
+                    <td class="col-9 item">{{ workspace_obj.name }}</td>
+                </tr>
+                <tr class="d-flex flex-fill workspace_descript">
+                    <td class="col-3">工作區描述</td>
+                    <td class="col-9 item">{{ workspace_obj.descriptions }}</td>
+                </tr>
+                <tr class="d-flex flex-fill workspace_group">
+                    <td class="col-3">工作區組別</td>
+                    <td class="col-9 item">
+                        {% if workspace_obj.visibility_id == 1 %}
+                            私人
+                        {% elif workspace_obj.visibility_id == 2 %}
+                            公開
+                        {% elif workspace_obj.visibility_id == 3 %}
+                            群組
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="d-flex flex-fill workspace_owner">
+                    <td class="col-3">工作區擁有者</td>
+                    <td class="col-9 item">
+                        {{ workspace_owner_obj.member_id }}
+                    </td>
+                </tr>
+                {% if workspace_obj.visibility_id == 3 %}
+                    <tr class="d-flex flex-fill workspace_member">
+                        <td class="col-3">工作區人員</td>
+                        <td class="col-9 item">
+                            {% for member in workspace_member_developer_obj %}
+                                {{ member.member_id }},
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr class="d-flex flex-fill workspace_created_date">
+                    <td class="col-3">工作區建立時間</td>
+                    <td class="col-9 item">{{ workspace_obj.created_at }}</td>
+                </tr>
+                <tr class="d-flex flex-fill workspace_edit_date">
+                    <td class="col-3">工作區最後編輯時間</td>
+                    <td class="col-9 item">{{ workspace_obj.updated_at }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row px-5 justify-content-end confirm_area">
+            <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#edit_confirm">確認</button>
+            <button type="button" class="btn btn-danger cancel_btn">取消</button>
+        </div>
+        <div class="modal" id="edit_confirm">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <h5>是否完成修改?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success confirm_btn">確認</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .flex-fill .item {
+            word-wrap: break-word;
+
+        }
+
+        .workspace_name .item input {
+            height: 100%;
+        }
+
+        .workspace_descript .item {
+            height: 38vh;
+        }
+
+        .workspace_descript .item textarea {
+            height: 100%;
+        }
+
+        .confirm_area {
+            display: none;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script>
+    //django_ajax_csrf取得
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+        $(".edit_btn").on("click", function () {
+            var $name_area = $(".workspace_name .item");
+            var $descript_area = $(".workspace_descript .item");
+            var $group_area = $(".workspace_group .item");
+            var $member_area = $(".workspace_member .item");
+            $name_area.html('<input type="text" name="name" value="{{ workspace_obj.name }}" class="form-control" maxlength="50" required>');
+            $descript_area.html('<textarea name="descriptions" cols="40" rows="10" class="form-control" maxlength="1000" required>{{ workspace_obj.descriptions }}</textarea>');
+            $group_area.html(
+                '{% for visibility in visibility_obj %}<div class="form-check form-check-inline">'+
+                    '{% if visibility.id == workspace_obj.visibility_id %}'+
+                    '<input class="form-check-input" type="radio" name="visibility"value="{{ visibility.id }}" checked>'
+                    +
+                    '{% else %}<input class="form-check-input" type="radio" name="visibility"value="{{ visibility.id }}">'
+                    +
+                    '{% endif %}{% if visibility.id == 1 %}<label class="form-check-label">私人</label>'+
+                    '{% elif visibility.id == 2 %}<label class="form-check-label">公開</label>{% elif visibility.id == 3 %}'
+                    +
+                    '<label class="form-check-label">群組</label>{% endif %}</div>{% endfor %}'
+            );
+            $member_area.html(
+                '{% for member in workspace_member_obj %}{% if member.id in workspace_member_developer_id_list %}' +
+                '<div class="form-check form-check-inline"><input class="form-check-input" ' +
+                'type="checkbox" name="members" value="{{ member.id }}" checked>{{ member.username }}</div>{% else %}' +
+                '<div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" name="members" ' +
+                'value="{{ member.id }}">{{ member.username }}</div>{% endif %}{% endfor %}'
+            );
+            $(".confirm_area").css('display', 'flex');
+        })
+
+        $("body").on("click", ".cancel_btn", function () {
+            var $name_area = $(".workspace_name .item");
+            var $descript_area = $(".workspace_descript .item");
+            var $group_area = $(".workspace_group .item");
+            var $member_area = $(".workspace_member .item");
+            $name_area.html('{{ workspace_obj.name }}')
+            $descript_area.html('{{ workspace_obj.descriptions }}')
+            $group_area.html('{% if workspace_obj.visibility_id == 1 %}'+
+                '私人'+
+                '{% elif workspace_obj.visibility_id == 2 %}'+
+                '公開'+
+                '{% elif workspace_obj.visibility_id == 3 %}'+
+                '群組'+
+                '{% endif %}')
+            $member_area.html('{% for member in workspace_member_developer_obj %}{{ member.member_id }}, {% endfor %}');
+            $(".confirm_area").css('display', 'none');
+        })
+        
+    $('.confirm_btn').on('click', function () {
+        var name = $(".workspace_name .item input").val();
+        var descriptions = $(".workspace_descript .item textarea").val();
+        var group = $('input[name="visibility"]:checked').val();
+        var member_areas = []
+        $.each($('input[name="members"]:checked'), function () {
+            member_areas.push($(this).val())
+        })
+        console.log(name, descriptions, group, member_areas)
+        $.ajax({
+            url: '/workspace/detail/edit/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'workspace_id': {{ pk }},
+                    'name': name,
+                    'descriptions': descriptions,
+                    'group': group,
+                    'member_areas': member_areas,
+                },
+                success:function (data) {
+                    console.log(data);
+                    location.reload();
+            }
+        });
+
+    })
+    </script>
+{% endblock %}

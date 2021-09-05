@@ -10,6 +10,46 @@ from django.http import JsonResponse
 import json
 
 
+def register(request):
+    register_form = RegisterForm()
+    if request.method == "POST":
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            register_form.save()
+            messages.success(request, "註冊成功，請重新登入", extra_tags="Login")
+            return redirect("/login")
+        else:
+            errs = dict(register_form.errors)
+            errfields = []
+            for errfield in errs.keys():
+                errfields.append(errfield)
+            messages.error(request, "註冊失敗，請重新輸入", extra_tags="Login")
+
+    return render(request, "register.html", locals())
+
+
+def sign_in(request):
+
+    login_form = LoginForm()
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect("/")
+
+    return render(request, "login.html", locals())
+
+
+def log_out(request):
+
+    logout(request)
+
+    return redirect('/login')
+
+
 @login_required(login_url="Login")
 def pms_index(request):
     my_projects = []
@@ -32,6 +72,151 @@ def pms_index(request):
     new_project_form = ProjectForm()
     visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)
     return render(request, "index.html", locals())
+
+
+def user_profile(request, name):
+    user_obj = User.objects.filter(username=name).first()
+    return render(request, "user_profile.html", locals())
+
+
+
+@login_required(login_url="Login")
+def my_workspace(request):
+    my_projects = []
+    projects_list_include_myself_as_owner = ProjectMembers.objects.filter(member_id=request.user).filter(
+        member_status='Owner')
+    for projects in projects_list_include_myself_as_owner:
+        projects_list_private = Projects.objects.filter(id=projects.project_id_id).filter(visibility_id=1).filter(
+            status='active').values()
+        if projects_list_private:
+            my_projects.append({'id': projects_list_private[0]['id'], 'name': projects_list_private[0]['name']})
+
+    all_users = User.objects.exclude(username=request.user)
+    new_project_form = ProjectForm()
+    visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)
+    return render(request, "workspace_my.html", locals())
+
+
+@login_required(login_url="Login")
+def group_workspace(request):
+    group_projects = []
+    projects_list_include_myself = ProjectMembers.objects.filter(member_id=request.user)
+    for projects in projects_list_include_myself:
+        projects_list_group = Projects.objects.filter(id=projects.project_id_id).filter(visibility_id=3).filter(
+            status='active').values()
+        if projects_list_group:
+            group_projects.append({'id': projects_list_group[0]['id'], 'name': projects_list_group[0]['name']})
+
+        all_users = User.objects.exclude(username=request.user)
+        new_project_form = ProjectForm()
+        visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)
+    return render(request, "workspace_group.html", locals())
+
+
+@login_required(login_url="Login")
+def public_workspace(request):
+    public_projects = Projects.objects.filter(visibility_id=2).filter(status='active').values()
+
+    all_users = User.objects.exclude(username=request.user)
+    new_project_form = ProjectForm()
+    visibility_label = VisibilityAttribute.objects.values_list('visibility', flat=True)
+    return render(request, "workspace_public.html", locals())
+
+
+def workspace_detail(request, pk):
+    workspace_obj = Projects.objects.get(id=pk)
+    workspace_owner_obj = ProjectMembers.objects.get(project_id=workspace_obj, member_status="Owner")
+    workspace_member_obj = User.objects.exclude(id=workspace_owner_obj.member_id.id)
+    visibility_obj = VisibilityAttribute.objects.all()
+    workspace_member_developer_obj = ProjectMembers.objects.filter(project_id=workspace_obj, member_status="Developer")
+    workspace_member_developer_id_list = workspace_member_developer_obj.values_list('member_id', flat=True)
+    return render(request, "workspace_detail.html", locals())
+
+
+def workspace_detail_edit(request):
+    # get_info
+    workspace_id = request.POST.get('workspace_id')
+    workspace_name_edited = request.POST.get('name')
+    workspace_descriptions_edited = request.POST.get('descriptions')
+    workspace_group_edited = request.POST.get('group')
+    workspace_members_list_edited_list_raw = request.POST.getlist('member_areas[]')
+    workspace_members_list_edited_list = [int(i) for i in workspace_members_list_edited_list_raw]
+    # ajax_received
+    if request.method == 'POST':
+        workspace_obj = Projects.objects.get(id=workspace_id)
+
+        # check edit objects and save
+        while workspace_obj.name != workspace_name_edited:
+            workspace_obj.name = workspace_name_edited
+            continue
+        while workspace_obj.descriptions != workspace_descriptions_edited:
+            workspace_obj.descriptions = workspace_descriptions_edited
+            continue
+        while workspace_obj.visibility_id != workspace_group_edited:
+            workspace_obj.visibility_id = workspace_group_edited
+            continue
+        workspace_obj.save()
+
+        # members_updated
+        workspace_members_obj = ProjectMembers.objects.filter(project_id=workspace_id, member_status='Developer').order_by("member_id").values_list("member_id", flat=True)
+        workspace_members_list_edited_set = set()
+        workspace_members_set = set()
+        workspace_members_list_edited_set.update(workspace_members_list_edited_list)
+        workspace_members_set.update(workspace_members_obj)
+        # edit 有 origin 沒有 = create
+        workspace_members_difference_create_set = workspace_members_list_edited_set.difference(workspace_members_set)
+        # edit 沒有 origin 有 = delete
+        workspace_members_difference_delete_set = workspace_members_set.difference(workspace_members_list_edited_set)
+        if workspace_members_difference_create_set or workspace_members_difference_delete_set:
+            for members_id in workspace_members_difference_create_set:
+                try:
+                    # update
+                    obj = ProjectMembers.objects.filter(project_id=workspace_id, member_id=members_id).first()
+                    obj.member_status = 'Developer'
+                    obj.save()
+                except AttributeError:
+                    # create
+                    new_workspace_members_obj = ProjectMembers()
+                    new_workspace_members_obj.project_id = Projects.objects.get(id=workspace_id)
+                    new_workspace_members_obj.member_status = 'Developer'
+                    new_workspace_members_obj.member_id = User.objects.get(id=members_id)
+                    new_workspace_members_obj.save()
+            for member_id in workspace_members_difference_delete_set:
+                # delete
+                ProjectMembers.objects.filter(project_id=workspace_id, member_id=member_id).update(member_status='Close')
+            data = {'result': 'success'}
+            return JsonResponse(data, safe=False)
+        else:
+            data = {'result': 'nonchange'}
+            return JsonResponse(data, safe=False)
+
+
+
+def workspace_edit(request):
+    if request.method == 'GET':
+        workspace_id = request.GET.get('workspace_id')
+        workspace_obj = Projects.objects.get(id=workspace_id)
+        workspace_name = workspace_obj.name
+        workspace_descript = workspace_obj.descriptions
+        workspace_visibility = workspace_obj.visibility_id
+        data = {'result': 'success', 'workspace_name': workspace_name, 'workspace_descript': workspace_descript, 'workspace_visibility': workspace_visibility}
+        return JsonResponse(data, safe=False)
+
+    elif request.method == "POST":
+        workspace_id = request.POST.get('workspace_id')
+        workspace_name = request.POST.get('workspace_title')
+        workspace_descript = request.POST.get('workspace_content')
+        visibility = request.POST.get('visibility')
+        workspace_obj = Projects.objects.get(id=workspace_id)
+        try:
+            workspace_obj.name = workspace_name
+            workspace_obj.descriptions = workspace_descript
+            workspace_obj.visibility_id = visibility
+            workspace_obj.save()
+            data = {'result': 'success'}
+        except:
+            data = {'result': 'fail'}
+        return JsonResponse(data, safe=False)
 
 
 def workspace_delete(request):
@@ -66,44 +251,6 @@ def create_workspace(request):
             return redirect("/")
 
 
-def sign_in(request):
-
-    login_form = LoginForm()
-
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("/")
-
-    return render(request, "login.html", locals())
-
-
-def log_out(request):
-
-    logout(request)
-
-    return redirect('/login')
-
-
-def register(request):
-    register_form = RegisterForm()
-    if request.method == "POST":
-        register_form = RegisterForm(request.POST)
-        if register_form.is_valid():
-            register_form.save()
-            messages.success(request, "註冊成功，請重新登入", extra_tags="Login")
-            return redirect("/login")
-        else:
-            errs = dict(register_form.errors)
-            errfields = []
-            for errfield in errs.keys():
-                errfields.append(errfield)
-            messages.error(request, "註冊失敗，請重新輸入", extra_tags="Login")
-
-    return render(request, "register.html", locals())
 
 
 @login_required(login_url="Login")
@@ -160,61 +307,161 @@ def workspace_card_add(request):
 
 
 def workspace_list_switch(request):
-    workspace_id = request.POST.get("workspace_id")
-    list_of_all_position_raw = request.POST.get("list_of_all_position").split(",")
-    list_of_all_position = [int(i) for i in list_of_all_position_raw]
-    original_position_obj = WorkspaceList.objects.filter(workspace=workspace_id).exclude(status="close").order_by('position').values_list('id', flat=True)
-    list_of_origin_position = list(original_position_obj)
-    for index, value in enumerate(list_of_all_position):
-        if list_of_origin_position[index] != value:
-            WorkspaceList.objects.filter(id=value).update(position=index+1)
-    return JsonResponse(list_of_all_position, safe=False)
+    switch_method = request.POST.get("switch_method")
+    # 拖曳移動list
+    if switch_method == "sortable":
+        workspace_id = request.POST.get("workspace_id")
+        list_of_all_position_raw = request.POST.get("list_of_all_position").split(",")
+        list_of_all_position = [int(i) for i in list_of_all_position_raw]
+        original_position_obj = WorkspaceList.objects.filter(workspace=workspace_id).exclude(status="close").order_by('position').values_list('id', flat=True)
+        list_of_origin_position = list(original_position_obj)
+        for index, value in enumerate(list_of_all_position):
+            if list_of_origin_position[index] != value:
+                WorkspaceList.objects.filter(id=value).update(position=index+1)
+        return JsonResponse(list_of_all_position, safe=False)
+    # 按鍵移動
+    # list向前移動
+    elif switch_method == "move_forward":
+        workspace_id = request.POST.get("workspace_id")
+        list_id = request.POST.get("list_id")
+        list_position_obj = WorkspaceList.objects.get(id=list_id)
+        if list_position_obj.position == 1:
+            data = {"result": "已經為第一個"}
+            return JsonResponse(data, safe=False)
+        else:
+            list_position_front = WorkspaceList.objects.get(workspace=workspace_id, position=list_position_obj.position - 1)
+            list_position_front.position = list_position_obj.position
+            list_position_obj.position = list_position_obj.position - 1
+            list_position_front.save()
+            list_position_obj.save()
+            data = {"result": "success"}
+            return JsonResponse(data, safe=False)
+    # list向後移動
+    elif switch_method == "move_backward":
+        workspace_id = request.POST.get("workspace_id")
+        list_id = request.POST.get("list_id")
+        list_position_obj = WorkspaceList.objects.get(id=list_id)
+        list_position_total = WorkspaceList.objects.filter(workspace=workspace_id, status="active").values_list()
+        if list_position_obj.position == list_position_total.count():
+            data = {"result": "已經為最末個"}
+            return JsonResponse(data, safe=False)
+        else:
+            list_position_back = WorkspaceList.objects.get(workspace=workspace_id,
+                                                            position=list_position_obj.position + 1)
+            list_position_back.position = list_position_obj.position
+            list_position_obj.position = list_position_obj.position + 1
+            list_position_back.save()
+            list_position_obj.save()
+            data = {"result": "success"}
+            return JsonResponse(data, safe=False)
 
 
 def workspace_card_switch(request):
-    card_id = request.POST.get("target_id")
-    target_list = request.POST.get("target_to_list")
-    target_list_card_position_raw = request.POST.getlist("target_to_list_card_order[]")
-    previous_list_id = request.POST.get("origin_list_id")
-    previous_list_card_position_raw = request.POST.getlist("origin_list_card_order[]")
+    switch_method = request.POST.get("switch_method")
+    # 拖曳移動card
+    if switch_method == "sortable":
+        card_id = request.POST.get("target_id")
+        target_list = request.POST.get("target_to_list")
+        target_list_card_position_raw = request.POST.getlist("target_to_list_card_order[]")
+        previous_list_id = request.POST.get("origin_list_id")
+        previous_list_card_position_raw = request.POST.getlist("origin_list_card_order[]")
 
-    previous_list_card_position = [int(i) for i in previous_list_card_position_raw]
-    target_list_card_position = [int(i) for i in target_list_card_position_raw]
-    target_list_origin = ListCard.objects.get(id=card_id).list_id
-    target_list_origin_card_position_raw = ListCard.objects.filter(list=target_list).exclude(status="close").values_list('id', flat=True).order_by('position')
-    target_list_origin_card_position = list(target_list_origin_card_position_raw)
-    if int(target_list_origin) == int(target_list):
-        for index, value in enumerate(target_list_card_position):
-            if target_list_origin_card_position[index] != value:
-                ListCard.objects.filter(id=value).update(position=index+1)
-        return JsonResponse(target_list_origin, safe=False)
+        previous_list_card_position = [int(i) for i in previous_list_card_position_raw]
+        target_list_card_position = [int(i) for i in target_list_card_position_raw]
+        target_list_origin = ListCard.objects.get(id=card_id).list_id
+        target_list_origin_card_position_raw = ListCard.objects.filter(list=target_list).exclude(status="close").values_list('id', flat=True).order_by('position')
+        target_list_origin_card_position = list(target_list_origin_card_position_raw)
+        if int(target_list_origin) == int(target_list):
+            for index, value in enumerate(target_list_card_position):
+                if target_list_origin_card_position[index] != value:
+                    ListCard.objects.filter(id=value).update(position=index+1)
+            return JsonResponse(target_list_origin, safe=False)
 
-    else:
-        origin_list_card_position_raw = ListCard.objects.filter(list_id=previous_list_id).exclude(status="close").values_list('id', flat=True).order_by('position')
-        origin_list_card_position = list(origin_list_card_position_raw)
-        origin_card_obj = ListCard.objects.get(id=card_id)
-        origin_card_position = int(origin_card_obj.position)
+        else:
+            origin_list_card_position_raw = ListCard.objects.filter(list_id=previous_list_id).exclude(status="close").values_list('id', flat=True).order_by('position')
+            origin_list_card_position = list(origin_list_card_position_raw)
+            origin_card_obj = ListCard.objects.get(id=card_id)
+            origin_card_position = int(origin_card_obj.position)
 
-        target_list_origin_card_position.append(0)
-        list_obj = WorkspaceList.objects.get(id=target_list)
-        target_list_total_cards = ListCard.objects.filter(list=target_list).exclude(status="close").count()
+            target_list_origin_card_position.append(0)
+            list_obj = WorkspaceList.objects.get(id=target_list)
+            target_list_total_cards = ListCard.objects.filter(list=target_list).exclude(status="close").count()
+            try:
+                origin_card_obj.list = list_obj
+                origin_card_obj.position = target_list_total_cards+1
+                origin_card_obj.save()
+            except WorkspaceList.DoesNotExist:
+                print("error")
+
+            for index, value in enumerate(target_list_card_position):
+                if target_list_origin_card_position[index] != value:
+                    ListCard.objects.filter(id=value).update(position=index+1)
+
+            for index, value in enumerate(origin_list_card_position):
+                if index+1 == origin_card_position:
+                    continue
+                elif index+1 > origin_card_position:
+                    ListCard.objects.filter(id=value).update(position=index)
+            return JsonResponse(previous_list_card_position, safe=False)
+    # 按鍵移動
+    # card轉換list
+    elif switch_method == "switch_to_list":
+        card_id = request.POST.get("card_id")
+        target_list_id = request.POST.get("target_list_id")
+        list_obj = WorkspaceList.objects.get(id=target_list_id)
+        card_obj = ListCard.objects.get(id=card_id)
+        card_origin_list = card_obj.list_id
         try:
-            origin_card_obj.list = list_obj
-            origin_card_obj.position = target_list_total_cards+1
-            origin_card_obj.save()
-        except WorkspaceList.DoesNotExist:
-            print("error")
+            card_position_total = ListCard.objects.filter(list_id=target_list_id, status="active").values_list()
+            card_obj.list_id = list_obj
+            card_obj.position = card_position_total.count() + 1
+            card_obj.save()
+            i = 1
+            card_original_obj = ListCard.objects.filter(list_id=card_origin_list, status="active").order_by("position")
+            for card in card_original_obj:
+                card.position = i
+                card.save()
+                i += 1
+            data = {"result": "success"}
+            return JsonResponse(data, safe=False)
+        except:
+            data = {"result": "移動失敗"}
+            return JsonResponse(data, safe=False)
 
-        for index, value in enumerate(target_list_card_position):
-            if target_list_origin_card_position[index] != value:
-                ListCard.objects.filter(id=value).update(position=index+1)
 
-        for index, value in enumerate(origin_list_card_position):
-            if index+1 == origin_card_position:
-                continue
-            elif index+1 > origin_card_position:
-                ListCard.objects.filter(id=value).update(position=index)
-        return JsonResponse(previous_list_card_position, safe=False)
+    # card往上移動
+    elif switch_method == "move_forward":
+        card_id = request.POST.get("card_id")
+        card_position_obj = ListCard.objects.get(id=card_id)
+        if card_position_obj.position == 1:
+            data = {"result": "已經為第一個"}
+            return JsonResponse(data, safe=False)
+        else:
+            card_position_front = ListCard.objects.get(list_id=card_position_obj.list_id,
+                                                            position=card_position_obj.position - 1)
+            card_position_front.position = card_position_obj.position
+            card_position_obj.position = card_position_obj.position - 1
+            card_position_front.save()
+            card_position_obj.save()
+            data = {"result": "success"}
+            return JsonResponse(data, safe=False)
+    # card往下移動
+    elif switch_method == "move_backward":
+        card_id = request.POST.get("card_id")
+        card_position_obj = ListCard.objects.get(id=card_id)
+        card_position_total = ListCard.objects.filter(list_id=card_position_obj.list_id, status="active").values_list('position')
+        if card_position_obj.position == card_position_total.count():
+            data = {"result": "已經為最末個"}
+            return JsonResponse(data, safe=False)
+        else:
+            card_position_back = ListCard.objects.get(list_id=card_position_obj.list_id,
+                                                            position=card_position_obj.position + 1)
+            card_position_back.position = card_position_obj.position
+            card_position_obj.position = card_position_obj.position + 1
+            card_position_back.save()
+            card_position_obj.save()
+            data = {"result": "success"}
+            return JsonResponse(data, safe=False)
 
 
 def workspace_list_delete(request):
