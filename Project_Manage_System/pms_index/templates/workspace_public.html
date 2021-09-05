@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>public workspace - PMSystem</title>
+{% endblock %}
+
+
+{% load static %}
+
+{% block messages %}
+    {% if messages %}
+        <div class="container-fluid">
+            {% for message in messages %}
+                {% if "Workspace" in message.tags %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}
+                {% endif %}
+            {% endfor %}
+            {% if messages %}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid workspace_platform">
+        <div class="row">
+            <div class="col-md">
+            </div>
+            <div class="col-md-9">
+                <nav class="navbar">
+                    <h2>工作區列表</h2>
+                    <a class="btn btn-primary the-modal" data-toggle="modal" data-target="#NewWorkspace">
+                        新增工作區
+                    </a>
+                    <div class="modal fade" id="NewWorkspace">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">新增工作區</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{% url 'CreateNewWorkspace' %}" method="POST">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label>{{ new_project_form.name.label }}</label>
+                                            {{ new_project_form.name }}
+                                        </div>
+                                        <div class="form-group">
+                                            <label>{{ new_project_form.descriptions.label }}</label>
+                                            {{ new_project_form.descriptions }}
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            {{ new_project_form.visibility.0.tag }}
+                                            <label class="custom-control-label"
+                                                   for="{{ new_project_form.visibility.0.id_for_label }}">
+                                                {{ visibility_label.0 }}
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            {{ new_project_form.visibility.2.tag }}
+                                            <label class="custom-control-label"
+                                                   for="{{ new_project_form.visibility.2.id_for_label }}">
+                                                {{ visibility_label.2 }}
+                                            </label>
+                                        </div>
+                                        <div class="custom-control custom-radio custom-control-inline">
+                                            {{ new_project_form.visibility.1.tag }}
+                                            <label class="custom-control-label"
+                                                   for="{{ new_project_form.visibility.1.id_for_label }}">
+                                                {{ visibility_label.1 }}
+                                            </label>
+                                        </div>
+                                        <hr>
+                                        <div class="flex justify-content-end">
+                                            <input class="btn btn-success" type="submit" name="save_next" value="儲存">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <br>
+                <nav class="navbar">
+                    <h4>公開工作區</h4>
+                    <a class="collapse_icon" data-toggle="collapse" role="button" href="#publicworkspace"
+                       aria-expanded="true">
+                        <img src="{% static '/images/icon-collapse-show.png' %}" class="collapse_icon_show">
+                        <img src="{% static '/images/icon-collapse.png' %}" class="collapse_icon_hide">
+                    </a>
+                </nav>
+                <hr class="solid mt-0">
+                <div class="collapse show" id="publicworkspace">
+                    <div class="row">
+                        {% for project in public_projects %}
+                            <div class="col-md-3 workspace_group">
+                                <a class="btn btn-outline-info workspace_btn shadow-sm" role="button"
+                                   href="{% url 'Workspace' project.id %}">
+                                    <h4 class="workspace_title">{{ project.name }}</h4>
+                                    <button class="btn workspace_more_btn nonetriggered" data-toggle="dropdown"
+                                            type="button"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                        <img src="{% static "images/more_icon1.png" %}">
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="dropdown-item workspace_more_items workspace_delete" href="#">刪除</li>
+                                        <li class="dropdown-item workspace_more_items workspace_edit" href="#">編輯</li>
+                                    </ul>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    <style>
+        .workspace_group {
+            padding-left: 2%;
+            padding-top: 1%;
+            padding-bottom: 1%;
+        }
+
+        .collapse_icon_hide {
+            height: 3vh;
+            width: 3vh;
+        }
+
+        .collapse_icon_show {
+            height: 3vh;
+            width: 3vh;
+        }
+
+        [aria-expanded="false"] .collapse_icon_hide {
+            display: inline;
+        }
+
+        [aria-expanded="false"] .collapse_icon_show {
+            display: none;
+        }
+
+        [aria-expanded="true"] .collapse_icon_hide {
+            display: none;
+        }
+
+        [aria-expanded="true"] .collapse_icon_show {
+            display: inline;
+        }
+
+
+        .workspace_btn {
+            width: 100%;
+            padding: 12%;
+        }
+
+        .workspace_title {
+            display: inline-block;
+        }
+
+        .workspace_more_btn {
+            padding: unset;
+            float: right;
+            visibility: hidden;
+            filter: invert(93%) sepia(8%) saturate(177%) hue-rotate(169deg) brightness(40%) contrast(88%);
+        }
+
+        .workspace_platform {
+            padding-top: 2vh;
+        }
+
+        .modal_description {
+            width: 100%;
+            height: 40vh;
+            border: #cccccc solid 1px;
+            resize: none;
+            padding: 2%;
+            word-break: break-word;
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script>
+        //more button hover
+        $('body').on('mouseenter', '.workspace_btn', function () {
+            $(this).find(".workspace_more_btn").css({"visibility": "visible"})
+        })
+        $('body').on('mouseleave', '.workspace_btn', function () {
+            $(this).find(".workspace_more_btn.nonetriggered").css({"visibility": "hidden"})
+        })
+        //more button 按下 button 效果恆亮, 取消則回復原狀
+        $('.workspace_btn').on('show.bs.dropdown', function (event) {
+            $(this).closest(".workspace_more_btn").css({"visibility": "visible"})
+            $(this).find('.workspace_more_btn').removeClass('nonetriggered')
+            $(this).closest('.workspace_btn').addClass('active')
+
+        })
+        $('.workspace_btn').on('hide.bs.dropdown', function (event) {
+            $(this).find('.workspace_more_btn').addClass('nonetriggered')
+            $(this).find(".workspace_more_btn.nonetriggered").css({"visibility": "hidden"})
+            $(this).closest('.workspace_btn').removeClass('active')
+        })
+        //more button 按下不跳轉
+        $('body').on('click', '.workspace_more_btn', function (event) {
+            event.preventDefault();
+        })
+        $('body').on('click', '.workspace_more_items', function (event) {
+            event.preventDefault()
+        })
+
+        //django_ajax_csrf取得
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        //workspace刪除
+        $('body').on('click', '.workspace_delete', function () {
+            var workspace_id = $(this).closest('.workspace_btn').attr('href').slice(11)
+            $.ajax({
+                url: '/workspace_delete/',
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {'workspace_id': workspace_id},
+                success: function (data) {
+                    result = data['result'];
+                    if (result == 'success') {
+                        $('.workspace_platform').load(' .workspace_platform > *')
+                    } else {
+                        console.log(result)
+                    }
+                }
+            })
+        })
+
+        //點擊編輯跳出modal
+        $('body').on('click', '.workspace_edit', function () {
+            $('#edit_modal').modal('show', $(this));
+        })
+        $('#edit_modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var workspace_id = button.closest('.workspace_btn').attr('href').slice(11);
+            var modal = $(this)
+            $.ajax({
+                url: '/workspace_edit/',
+                type: 'GET',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {'workspace_id': workspace_id},
+                success: function (data) {
+                    result = data['result']
+                    if (result == 'success') {
+                        var visibility = parseInt(data['workspace_visibility']);
+                        modal.find('.modal_title').text(data['workspace_name']);
+                        modal.find('.modal_description').text(data['workspace_descript']);
+                        modal.find('input[value=' + visibility + ']').trigger('click');
+                    } else {
+                        console.log('error');
+                    }
+
+                }
+            })
+        })
+
+    </script>
+{% endblock %}
