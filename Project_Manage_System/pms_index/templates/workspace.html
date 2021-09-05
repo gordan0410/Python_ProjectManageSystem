@@ -2,7 +2,7 @@
 
 
 {% block title %}
-    <title>{{ workspace_title.name }}</title>
+    <title>{{ workspace_title.name }} - PMSystem</title>
 {% endblock %}
 
 {% load static %}
@@ -24,7 +24,12 @@
                         </div>
                         <div class="dropdown-divider"></div>
                         <div class="card-text">
-                            <p>{{ workspace_title.descriptions }}</p>
+                            <p>{{ workspace_title.descriptions }}
+                                <a class="float-right btn btn-light btn_workspace_detail" role="button" href="{% url "WorkspaceDetail" workspace_title.id %}">
+                                    <img src="{% static "images/icon_workspace_more.png" %}" height="20px" width="20px">
+                                    工作區詳細資訊
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -50,9 +55,11 @@
                                                     <img src="{% static 'images/more_icon1.png' %}"
                                                          height="18" width="18">
                                                 </button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item list_delete" href="#">刪除</a>
-                                                </div>
+                                                <ul class="dropdown-menu">
+                                                    <li class="dropdown-item list_delete">刪除</li>
+                                                    <li class="dropdown-item list_move_forward">專案前移</li>
+                                                    <li class="dropdown-item list_move_backward">專案後移</li>
+                                                </ul>
                                             </div>
                                         </div>
                                         <ul class="col list_projects sortable_connected_projects">
@@ -83,7 +90,7 @@
                                                 <div class="card-body">
                                                     <div class="row mr-auto ml-auto mb-3 add_project_form">
                                                         <input type="text" class="form-control add_project_input"
-                                                               placeholder="為列表輸入標題...">
+                                                               placeholder="為事項輸入標題...">
                                                     </div>
                                                     <div class="row float-right">
                                                         <button type="submit"
@@ -107,14 +114,14 @@
                                              class="float-left"
                                              height="30px"
                                              width="30px">
-                                        <p class="d-inline mr-3">新增列表</p>
+                                        <p class="d-inline mr-3">新增專案</p>
                                     </button>
                                 </div>
                                 <div class="card shadow-sm rounded add_hide add_list_size">
                                     <div class="card-body">
                                         <div class="row mr-auto ml-auto mb-3 add_list_form">
                                             <input type="text" class="form-control add_list_input"
-                                                   placeholder="為列表輸入標題...">
+                                                   placeholder="為專案輸入標題...">
                                         </div>
                                         <div class="row float-right">
                                             <button type="submit"
@@ -139,7 +146,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>專案名稱：</h5>
+                    <h5>事項名稱：</h5>
                     <h5 class="modal_title" data-titleedit></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -147,7 +154,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-2">
-                        專案內容：
+                        事項內容：
                         <button class="btn float-right p-0 m-0 dropright card_more"
                                 type="button" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="true"
@@ -155,9 +162,19 @@
                             <img src="{% static 'images/more_icon1.png' %}"
                                  height="18" width="18">
                         </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item card_delete" href="#">刪除</a>
-                        </div>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-item card_delete">刪除</li>
+                            <li class="dropdown-item dropdown-toggle dropdown-submenu card_move_to_list">移至指定專案...
+                                <ul class="dropdown-menu">
+                                    {% for list_obj in workspace_lists %}
+                                        <li class="dropdown-item card_switch_to_list"
+                                            value="{{ list_obj.id }}">{{ list_obj.list_name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li class="dropdown-item card_move_forward">向上移動事項</li>
+                            <li class="dropdown-item card_move_backward">向下移動事項</li>
+                        </ul>
                     </div>
                     <p class="modal_description" data-descriptionedit></p>
                 </div>
@@ -171,7 +188,15 @@
 {% endblock %}
 {% block style %}
     <style>
-        .board{
+        .btn_workspace_detail{
+            padding: unset;
+        }
+
+        li.dropdown-item {
+            cursor: pointer;
+        }
+
+        .board {
             padding-top: 4vh;
         }
 
@@ -221,7 +246,7 @@
         .list_title_size {
             width: 200px;
             height: 24px;
-            font-family:monospace;
+            font-family: monospace;
             font-size: 130%;
             margin-left: 5%;
             text-align: center;
@@ -313,28 +338,28 @@
 
 
         //list_more_icon and list_background_color hover
-        $('body').on('mouseenter', '.workspace_list', function (){
+        $('body').on('mouseenter', '.workspace_list', function () {
             $(this).find('.list_more').css('visibility', 'visible');
             $(this).removeClass('bg-white').css({'background-color': '#e9ecef'})
         })
-        $('body').on('mouseleave', '.workspace_list', function (){
+        $('body').on('mouseleave', '.workspace_list', function () {
             $(this).find('.list_more').css('visibility', 'hidden');
             $(this).addClass('bg-white').removeAttr('style')
         })
-        $('body').on('mousedown', '.workspace_list', function (){
+        $('body').on('mousedown', '.workspace_list', function () {
             $(this).addClass('bg-white').removeAttr('style')
         })
         //card_background_color hover
-        $('body').on('mouseenter', '.project_card_size', function (){
+        $('body').on('mouseenter', '.project_card_size', function () {
             $(this).css({'background-color': '#ced4da'})
         })
-        $('body').on('mouseleave', '.project_card_size', function (){
+        $('body').on('mouseleave', '.project_card_size', function () {
             $(this).css({'background-color': '#ffffff'})
         })
 
 
         //拖曳移動
-        //拖曳移動事項並儲存
+        //直接拖曳移動事項並儲存
         function initial_sortable_card() {
             $(".list_projects").sortable({
                 connectWith: ".sortable_connected_projects",
@@ -345,6 +370,7 @@
                     $(ui.item).parent().parent().parent(".workspace_list").addClass("data-previndex");
                 },
                 stop: function (event, ui) {
+                    var switch_method = 'sortable';
                     var target_id = $(ui.item).attr("id");
                     var target_to_list = $(ui.item).parent().parent().parent(".workspace_list").attr("id");
                     var target_to_list_card_order = []
@@ -366,6 +392,7 @@
                             'target_to_list_card_order[]': target_to_list_card_order,
                             'origin_list_id': origin_list_id,
                             'origin_list_card_order[]': origin_list_card_order,
+                            'switch_method': switch_method,
                         },
                         success: function (data) {
                             console.log(data)
@@ -375,7 +402,8 @@
                 },
             }).sortable("refresh");
         }
-        //拖曳移動列表並儲存
+
+        //直接拖曳移動列表並儲存
         function initial_sortable_list() {
             $(".list_platform").sortable({
                 connectWith: ".sortable_connected_lists",
@@ -383,6 +411,7 @@
                 dropOnEmpty: true,
                 items: "li.workspace_list",
                 update: function (event, ui) {
+                    var switch_method = 'sortable';
                     var list_of_all_position = $(".workspace_list").map(function () {
                         return $(this).attr('id');
                     }).get().join();
@@ -394,11 +423,161 @@
                         data: {
                             "list_of_all_position": list_of_all_position,
                             "workspace_id": workspace_id,
+                            "switch_method": switch_method,
                         },
                     })
                 }
             }).sortable("refresh");
         }
+
+        //按鍵控制移動位置
+        //list往前
+        $('body').on('click', '.list_move_forward', function () {
+            var workspace_id = {{ workspace_title.id }};
+            var list_id = $(this).closest('.workspace_list').attr('id');
+            var switch_method = "move_forward";
+            $.ajax({
+                url: "/workspace_list_switch/",
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'workspace_id': workspace_id,
+                    'list_id': list_id,
+                    'switch_method': switch_method,
+                },
+                success: function (data) {
+                    var result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_list();
+                            initial_sortable_card();
+                        });
+                    } else {
+                        alert(result)
+                    }
+                }
+            })
+        })
+        //list往後
+        $('body').on('click', '.list_move_backward', function () {
+            var workspace_id = {{ workspace_title.id }};
+            var list_id = $(this).closest('.workspace_list').attr('id');
+            var switch_method = "move_backward";
+            $.ajax({
+                url: "/workspace_list_switch/",
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'workspace_id': workspace_id,
+                    'list_id': list_id,
+                    'switch_method': switch_method,
+                },
+                success: function (data) {
+                    var result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_list();
+                            initial_sortable_card();
+                        });
+                    } else {
+                        alert(result)
+                    }
+                }
+            })
+        })
+        //card往上
+        $('body').on('click', '.card_move_forward', function () {
+            var card_id = $(this).closest('.modal').data('card_id');
+            var switch_method = "move_forward";
+            $.ajax({
+                url: "/workspace_card_switch/",
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'switch_method': switch_method,
+                    'card_id': card_id,
+                },
+                success: function (data) {
+                    var result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_list();
+                            initial_sortable_card();
+                        });
+                        $('#card_modal').modal('hide');
+                    } else {
+                        alert(result)
+                    }
+                }
+            })
+        })
+        //card往下
+        $('body').on('click', '.card_move_backward', function () {
+            var card_id = $(this).closest('.modal').data('card_id');
+            var switch_method = "move_backward";
+            $.ajax({
+                url: "/workspace_card_switch/",
+                type: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'switch_method': switch_method,
+                    'card_id': card_id,
+                },
+                success: function (data) {
+                    var result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_list();
+                            initial_sortable_card();
+                        });
+                        $('#card_modal').modal('hide');
+                    } else {
+                        alert(result)
+                    }
+                }
+            })
+        })
+        //card轉換list
+        //移至列表 submenu
+        $('.dropdown-menu li.dropdown-submenu').on('click', function (e) {
+            var $list_id = parseInt($("#card_modal").data('list_id'))
+            $(".dropdown-menu li[value=" + $list_id + "]").css('display', 'none')
+            var $subMenu = $(this).find('.dropdown-menu');
+            $subMenu.toggleClass('show');
+            $(this).parents('div.mb-2.show').on('hidden.bs.dropdown', function (e) {
+                $('.dropdown-submenu .show').removeClass('show');
+                $(".dropdown-menu li[value=" + $list_id + "]").css('display', '')
+            });
+            return false;
+        });
+        //card移至指定列表
+        $('.dropdown-item.card_switch_to_list').on('click', function () {
+            var switch_method = "switch_to_list";
+            var target_list_id = $(this).val();
+            var card_id = parseInt($("#card_modal").data('card_id'));
+            $.ajax({
+                url: "/workspace_card_switch/",
+                type: "POST",
+                headers: {'X-CSRFToken': csrftoken},
+                data: {
+                    'switch_method': switch_method,
+                    'card_id': card_id,
+                    'target_list_id': target_list_id,
+                },
+                success: function (data) {
+                    var result = data['result'];
+                    if (result == 'success') {
+                        $(".list_platform").load(" .list_platform > *", function () {
+                            initial_sortable_list();
+                            initial_sortable_card();
+                        });
+                        $('#card_modal').modal('hide');
+                    } else {
+                        alert(result)
+                    }
+                }
+            })
+        })
 
 
         //新增列表, 事項
@@ -422,90 +601,95 @@
             //取input值
             var input = $(this).parent().siblings(".add_list_form").children(".add_list_input").val();
             var workspace_id = "{{ workspace_title.id }}";
-            //ajax
-            $.ajax({
-                url: '/workspace_list_add/',
-                type: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
-                data: {
-                    add_list_name: input,
-                    workspace_id: workspace_id,
-                },
-                success: function (data) {
-                    result = data['result'];
-                    if (result == 'success') {
+            if (input == "") {
+                alert("列表標題不可為空")
+            } else {
+                //ajax
+                $.ajax({
+                    url: '/workspace_list_add/',
+                    type: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        add_list_name: input,
+                        workspace_id: workspace_id,
+                    },
+                    success: function (data) {
+                        result = data['result'];
+                        if (result == 'success') {
 
-                        $(".list_add").before(
-                            '<li class="workspace_list bg-white shadow-sm rounded border" id="' + data["list_id"] + '">' +
-                            '<div class="workspace_list_size_inside">' +
-                            '<div class="col">' +
-                            '<div class="list_title_size my-2 pr-2">' + data["list_name"] +
-                            '<button class="btn float-right p-0 dropright list_more"' +
-                            'type="button" data-toggle="dropdown"' +
-                            'aria-haspopup="true" aria-expanded="true"' +
-                            'data-flip="false">' +
-                            "<img src=\"{% static 'images/more_icon1.png' %}\"" +
-                            'height="18" width="18">' +
-                            '</button>' +
-                            '<div class="dropdown-menu">' +
-                            '<a class="dropdown-item list_delete" href="#">刪除</a>' +
-                            '</div></div></div>' +
-                            '<ul class="col list_projects sortable_connected_projects">' +
-                            '</ul>' +
-                            '<div class="col list_add_project">' +
-                            '<div class="card shadow-sm rounded add_show add_card_size">' +
-                            '<button type="button" class="btn btn-success btn-sm add_btn">' +
-                            "<img src=\"{% static 'images/plus-image.png' %}\"" +
-                            'class="float-left"' +
-                            'height="30px"' +
-                            'width="30px">' +
-                            '<p class="d-inline mr-3">新增事項</p>' +
-                            '</button>' +
-                            '</div>' +
-                            '<div class="card shadow-sm rounded add_hide add_card_size">' +
-                            '<div class="card-body">' +
-                            '<div class="row mr-auto ml-auto mb-3 add_project_form">' +
-                            '<input type="text" class="form-control add_project_input"' +
-                            'placeholder="為列表輸入標題...">' +
-                            '</div>' +
-                            '<div class="row float-right">' +
-                            '<button type="submit"' +
-                            'class="btn btn-primary btn-sm mr-3 add_project_submit">' +
-                            'Submit' +
-                            '</button>' +
-                            '<button type="button" class="close mr-3 add_close">' +
-                            '&times;' +
-                            '</button></div></div></div> </div></div></li>'
-                        );
-                        initial_sortable_card();
-                        initial_sortable_list();
-                    } else {
-                        $('#errormsg').html("新增失敗!");
-                    }
-                },
-                error: function (jqXHR, exception) {
-                    var msg = '';
-                    if (jqXHR.status === 0) {
-                        msg = 'Not connect.\n Verify Network.';
-                    } else if (jqXHR.status == 404) {
-                        msg = 'Requested page not found. [404]';
-                    } else if (jqXHR.status == 500) {
-                        msg = 'Internal Server Error [500].';
-                    } else if (exception === 'parsererror') {
-                        msg = 'Requested JSON parse failed.';
-                    } else if (exception === 'timeout') {
-                        msg = 'Time out error.';
-                    } else if (exception === 'abort') {
-                        msg = 'Ajax request aborted.';
-                    } else {
-                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                    }
-                    // $('#post').html(msg);
-                },
-            });
-            $(".add_show").show();
-            $(".add_hide").hide();
-            $('.add_list_input').val('');
+                            $(".list_add").before(
+                                '<li class="workspace_list bg-white shadow-sm rounded border" id="' + data["list_id"] + '">' +
+                                '<div class="workspace_list_size_inside">' +
+                                '<div class="col">' +
+                                '<div class="list_title_size my-2 pr-2">' + data["list_name"] +
+                                '<button class="btn float-right p-0 dropright list_more"' +
+                                'type="button" data-toggle="dropdown"' +
+                                'aria-haspopup="true" aria-expanded="true"' +
+                                'data-flip="false">' +
+                                "<img src=\"{% static 'images/more_icon1.png' %}\"" +
+                                'height="18" width="18">' +
+                                '</button>' +
+                                '<ul class="dropdown-menu">' +
+                                '<li class="dropdown-item list_delete" href="#">刪除</li>' +
+                                '<li class="dropdown-item list_move_forward">列表前移</li>' +
+                                '<li class="dropdown-item list_move_backward">列表後移</li>' +
+                                '</ul></div></div>' +
+                                '<ul class="col list_projects sortable_connected_projects">' +
+                                '</ul>' +
+                                '<div class="col list_add_project">' +
+                                '<div class="card shadow-sm rounded add_show add_card_size">' +
+                                '<button type="button" class="btn btn-success btn-sm add_btn">' +
+                                "<img src=\"{% static 'images/plus-image.png' %}\"" +
+                                'class="float-left"' +
+                                'height="30px"' +
+                                'width="30px">' +
+                                '<p class="d-inline mr-3">新增事項</p>' +
+                                '</button>' +
+                                '</div>' +
+                                '<div class="card shadow-sm rounded add_hide add_card_size">' +
+                                '<div class="card-body">' +
+                                '<div class="row mr-auto ml-auto mb-3 add_project_form">' +
+                                '<input type="text" class="form-control add_project_input"' +
+                                'placeholder="為列表輸入標題...">' +
+                                '</div>' +
+                                '<div class="row float-right">' +
+                                '<button type="submit"' +
+                                'class="btn btn-primary btn-sm mr-3 add_project_submit">' +
+                                'Submit' +
+                                '</button>' +
+                                '<button type="button" class="close mr-3 add_close">' +
+                                '&times;' +
+                                '</button></div></div></div> </div></div></li>'
+                            );
+                            location.reload();
+                        } else {
+                            $('#errormsg').html("新增失敗!");
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        } else if (jqXHR.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXHR.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                        }
+                        // $('#post').html(msg);
+                    },
+                });
+                $(".add_show").show();
+                $(".add_hide").hide();
+                $('.add_list_input').val('');
+            }
         })
         // 新增事項
         $(".list_platform").on("click", ".add_project_submit", function () {
@@ -514,47 +698,51 @@
             //以me替代this選擇, 以利ajax內使用
             var me = this;
             var list_id = $(this).parent().parent().parent().parent().parent().parent('.workspace_list').attr("id");
-            //ajax
-            $.ajax({
-                url: '/workspace_card_add/',
-                type: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
-                data: {
-                    add_project_name: input,
-                    list_id: list_id,
-                },
-                success: function (data) {
-                    result = data['result'];
-                    if (result == 'success') {
-                        $(me).parent().parent().parent().parent().siblings(".list_projects").append(
-                            '<li class="card shadow-sm rounded project_card_size" id="' + data['card_id'] +
-                            '"><div class="card-body">' + data['card_name'] +
-                            '</div></li>'
-                        );
-                    } else {
-                        $('#errormsg').html("新增失敗!");
-                    }
-                },
-                error: function (jqXHR, exception) {
-                    var msg = '';
-                    if (jqXHR.status === 0) {
-                        msg = 'Not connect.\n Verify Network.';
-                    } else if (jqXHR.status == 404) {
-                        msg = 'Requested page not found. [404]';
-                    } else if (jqXHR.status == 500) {
-                        msg = 'Internal Server Error [500].';
-                    } else if (exception === 'parsererror') {
-                        msg = 'Requested JSON parse failed.';
-                    } else if (exception === 'timeout') {
-                        msg = 'Time out error.';
-                    } else if (exception === 'abort') {
-                        msg = 'Ajax request aborted.';
-                    } else {
-                        msg = 'Uncaught Error.\n' + jqXHR.responseText;
-                    }
-                    // $('#post').html(msg);
-                },
-            });
+            if (input == "") {
+                alert("事項標題不可為空")
+            } else {
+                //ajax
+                $.ajax({
+                    url: '/workspace_card_add/',
+                    type: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        add_project_name: input,
+                        list_id: list_id,
+                    },
+                    success: function (data) {
+                        result = data['result'];
+                        if (result == 'success') {
+                            $(me).parent().parent().parent().parent().siblings(".list_projects").append(
+                                '<li class="card shadow-sm rounded project_card_size" id="' + data['card_id'] +
+                                '"><div class="card-body">' + data['card_name'] +
+                                '</div></li>'
+                            );
+                        } else {
+                            $('#errormsg').html("新增失敗!");
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        } else if (jqXHR.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXHR.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                        }
+                        // $('#post').html(msg);
+                    },
+                });
+            }
             $(this).parent().parent().parent().siblings(".add_show").show();
             $(this).parent().parent().parent(".add_hide").hide();
             $('.add_project_input').val('');
@@ -571,8 +759,9 @@
             var button = $(event.relatedTarget)
             var card_title = button.children('.card-body').text().trim()
             var card_id = button.attr('id')
+            var list_id = button.closest('.workspace_list').attr('id')
             var modal = $(this)
-            $('#card_modal').data('card_id', card_id);
+            $('#card_modal').data('card_id', card_id).data('list_id', list_id);
             $.ajax({
                 url: "/workspace_card_edit/",
                 type: "GET",
@@ -646,64 +835,66 @@
         //刪除列表, 事項
         //刪除列表
         $("body").on('click', '.list_delete', function () {
-            var list_id = $(this).parent().parent().parent().parent().parent('.workspace_list').attr('id');
-            var workspace_list_order = [];
-            $(this).parent().parent().parent().parent().parent().siblings('.workspace_list').each(function () {
-                workspace_list_order.push(this.id);
-            });
-            if ($('.workspace_list#' + list_id + ' .project_card_size').length) {
-                var list_card_exist = true
-            } else {
-                var list_card_exist = false
-            }
-            $.ajax({
-                url: '/workspace_list_delete/',
-                type: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
-                data: {
-                    'list_id': list_id,
-                    'workspace_list_order': workspace_list_order,
-                    'list_card_exist': list_card_exist,
-                },
-                success: function (data) {
-                    result = data['result'];
-                    if (result == 'success') {
-                        $(".list_platform").load(" .list_platform > *", function () {
-                            initial_sortable_card();
-                        });
-                    } else {
-                        $('#errormsg').html("刪除失敗!");
-                    }
+            if (confirm('確定要刪除此列表?\n(一經刪除將無法復原!)')) {
+                var list_id = $(this).parent().parent().parent().parent().parent('.workspace_list').attr('id');
+                var workspace_list_order = [];
+                $(this).parent().parent().parent().parent().parent().siblings('.workspace_list').each(function () {
+                    workspace_list_order.push(this.id);
+                });
+                if ($('.workspace_list#' + list_id + ' .project_card_size').length) {
+                    var list_card_exist = true
+                } else {
+                    var list_card_exist = false
                 }
-            })
+                $.ajax({
+                    url: '/workspace_list_delete/',
+                    type: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        'list_id': list_id,
+                        'workspace_list_order': workspace_list_order,
+                        'list_card_exist': list_card_exist,
+                    },
+                    success: function (data) {
+                        result = data['result'];
+                        if (result == 'success') {
+                            location.reload();
+                        } else {
+                            $('#errormsg').html("刪除失敗!");
+                        }
+                    }
+                });
+            }
         })
         //刪除事項
         $("body").on('click', '.card_delete', function () {
-            var card_id = $(this).closest('.modal').data('card_id');
-            var list_card_order = [];
-            $(this).parents('.modal').siblings('.container-fluid').find(".project_card_size#" + card_id).siblings().each(function () {
-                list_card_order.push(this.id);
-            });
-            $.ajax({
-                url: '/workspace_card_delete/',
-                type: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
-                data: {
-                    'card_id': card_id,
-                    'list_card_order': list_card_order,
-                },
-                success: function (data) {
-                    result = data['result'];
-                    if (result == 'success') {
-                        $(".workspace_list#" + data['list_id']).load(" .workspace_list#" + data['list_id'] + " > *", function () {
-                            initial_sortable_card();
-                        });
-                        $('#card_modal').modal('hide');
-                    } else {
-                        $('#errormsg').html("刪除失敗!");
+            if (confirm('確定要刪除此事項?\n(一經刪除將無法復原!)')) {
+                var card_id = $(this).closest('.modal').data('card_id');
+                var list_card_order = [];
+                $(this).parents('.modal').siblings('.container-fluid').find(".project_card_size#" + card_id).siblings().each(function () {
+                    list_card_order.push(this.id);
+                });
+                $.ajax({
+                    url: '/workspace_card_delete/',
+                    type: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        'card_id': card_id,
+                        'list_card_order': list_card_order,
+                    },
+                    success: function (data) {
+                        result = data['result'];
+                        if (result == 'success') {
+                            $(".workspace_list#" + data['list_id']).load(" .workspace_list#" + data['list_id'] + " > *", function () {
+                                initial_sortable_card();
+                            });
+                            $('#card_modal').modal('hide');
+                        } else {
+                            $('#errormsg').html("刪除失敗!");
+                        }
                     }
-                }
-            });
+                });
+            }
         })
     </script>
 {% endblock %}
