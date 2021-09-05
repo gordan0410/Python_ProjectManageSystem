@@ -37,9 +37,9 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <div class="dropdown-content">
-                            <a class="dropdown-item" href="#">My workspaces</a>
-                            <a class="dropdown-item" href="#">Public workspaces</a>
-                            <a class="dropdown-item" href="#">Group workspaces</a>
+                            <a class="dropdown-item" href="{% url "MyWorkspace" %}">My workspaces</a>
+                            <a class="dropdown-item" href="{% url "GroupWorkspace" %}">Group workspaces</a>
+                            <a class="dropdown-item" href="{% url "PublicWorkspace" %}">Public workspaces</a>
                         </div>
                     </div>
                 </li>
@@ -51,15 +51,11 @@
                     <img src="{% static 'images/pms_logo5.png' %}" height="30" width="25">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{% url 'UserProfile' request.user %}">
                         {{ request.user }}
                         <br>
                         @{{ request.user }}
                     </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Set status</a>
-                    <a class="dropdown-item" href="#">Edit profile</a>
-                    <a class="dropdown-item" href="#">Preferences</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'Logout' %}">Sign out</a>
                 </div>
