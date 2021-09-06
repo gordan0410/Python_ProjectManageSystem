@@ -1,5 +1,5 @@
 from django import forms
-from .models import Projects, ProjectMembers
+from .models import Projects, WorkspaceList, ListCard, ProjectMembers
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -20,21 +20,6 @@ class ProjectForm(forms.ModelForm):
             'descriptions': '工作區簡介',
             'visibility': '類別',
         }
-
-# class ProjectMembersForm(forms.ModelForm):
-#
-#     member_id: forms.ModelMultipleChoiceField(queryset=User.objects.none())
-#
-#     class Meta:
-#
-#         # model = ProjectMembers
-#         fields = ('member_id',)
-#         widgets = {
-#             'member_id': forms.SelectMultiple(attrs={'class': 'form-control'}),
-#         }
-#         labels = {
-#             'member_id': '專案使用者',
-#         }
 
 
 class RegisterForm(UserCreationForm):
@@ -86,3 +71,20 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}),
     )
 
+
+class WorkspaceForm(forms.ModelForm):
+
+
+    class Meta:
+        model = Projects
+        fields = ('name', 'descriptions', 'visibility')
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'descriptions': forms.Textarea(attrs={'class': 'form-control'}),
+            'visibility': forms.RadioSelect(attrs={'class': 'form-check form-check-inline', 'type': 'radio'}),
+        }
+        labels = {
+            'name': '工作區名稱',
+            'descriptions': '工作區簡介',
+            'visibility': '類別',
+        }

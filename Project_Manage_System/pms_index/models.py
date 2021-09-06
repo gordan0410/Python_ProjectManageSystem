@@ -27,12 +27,17 @@ class ProjectMembers(models.Model):
 
 
 class WorkspaceList(models.Model):
-    workspace_id = models.ForeignKey(Projects, on_delete=models.PROTECT)
+    workspace = models.ForeignKey(Projects, on_delete=models.PROTECT)
     list_name = models.CharField(max_length=50)
+    position = models.PositiveSmallIntegerField()
+    status = models.CharField(max_length=10, default="active")
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class ListCard(models.Model):
-    list_id = models.ForeignKey(WorkspaceList, on_delete=models.PROTECT)
+    list = models.ForeignKey(WorkspaceList, on_delete=models.PROTECT)
     card_name = models.CharField(max_length=50)
+    card_content = models.TextField(max_length=1000, null=True)
+    position = models.PositiveSmallIntegerField()
+    status = models.CharField(max_length=10, default="active")
     created_at = models.DateTimeField(auto_now_add=True)

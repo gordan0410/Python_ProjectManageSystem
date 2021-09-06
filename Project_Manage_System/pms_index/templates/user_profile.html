@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    <title>{{ name }} - PMSystem</title>
+{% endblock %}
+
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="row d-flex justify-content-center py-3">
+            <h4>{{ name }}</h4>
+        </div>
+        <hr class="solid mt-0">
+        <div class="row d-flex justify-content-center py-3 pb-5">
+            <img src="{% static 'images/unknown_user.png' %}">
+        </div>
+        <div class="row px-5">
+            <table class="table table-bordered">
+                <tbody class="">
+                <tr class="d-flex flex-fill">
+                    <td class="col">姓</td>
+                    <td class="col">{{ user_obj.last_name }}</td>
+                    <td class="col">名</td>
+                    <td class="col">{{ user_obj.first_name }}</td>
+                </tr>
+                <tr class="d-flex flex-fill">
+                    <td class="col-3">電子信箱</td>
+                    <td class="col-9">{{ user_obj.email }}</td>
+                </tr>
+                <tr class="d-flex flex-fill">
+                    <td class="col-3">最後登入時間</td>
+                    <td class="col-9">{{ user_obj.last_login }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
